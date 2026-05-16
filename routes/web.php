@@ -171,6 +171,10 @@ Route::middleware([
         ->middleware('role:pmik,admin')
         ->name('rekam.medis.validasi');
 
+    Route::get('/pmik/pelaporan', function () {
+        return view('pmik.pelaporan');
+    })->middleware('role:pmik')->name('pmik.pelaporan');
+
 
     Route::get('/monitoring', function () {
         $user = Auth::user();
