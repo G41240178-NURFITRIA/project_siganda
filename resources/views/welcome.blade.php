@@ -3,589 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGANDA</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;500;600&display=swap" rel="stylesheet">
+    <title>SIGANDA - Sistem Informasi Gawat Darurat</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        /* Pengaturan Dasar Supaya 1 Halaman Penuh */
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            overflow: hidden; /* Tidak bisa scroll */
         }
 
-        body{
-            font-family:'Inter',sans-serif;
-            background:#f5f7fb;
-            overflow:hidden;
-            height:100vh;
-            color:#111827;
+        /* Background Transparan IGD */
+        .page-wrapper {
+            height: 100%;
+            position: relative;
+            background-image: url('{{ asset("image/igd1.jpg") }}');
+            background-size: cover;
+            background-position: center;
         }
 
-        /* ================= NAVBAR ================= */
-
-        nav{
-            width:100%;
-            height:90px;
-            background:white;
-            padding:0 60px;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            box-shadow:0 2px 10px rgba(0,0,0,0.03);
-            position:relative;
-            z-index:100;
+        .page-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.92); /* Putih transparan */
+            z-index: 0;
         }
 
-        .logo{
-            display:flex;
-            align-items:center;
-            gap:18px;
+        .main-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
-        .logo img{
-            width:95px;
-            height:95px;
-            object-fit:contain;
+        /* Styling Navbar */
+        .navbar {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
         }
 
-        .logo-text h1{
-            font-size:34px;
-            font-weight:800;
-            color:#082567;
-            line-height:1;
+        .hero-section {
+            flex-grow: 1; /* Mengisi sisa ruang kosong di tengah */
         }
 
-        .logo-text p{
-            font-size:15px;
-            color:#4b5563;
-            margin-top:5px;
-            font-weight:600;
+        .feature-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
         }
 
-        .login-btn{
-            background:#2563eb;
-            color:white;
-            text-decoration:none;
-            padding:13px 28px;
-            border-radius:14px;
-            font-size:15px;
-            font-weight:600;
-            box-shadow:0 10px 25px rgba(37,99,235,0.25);
-            transition:0.3s;
+        .feature-card:hover {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .login-btn:hover{
-            transform:translateY(-2px);
+        .hero-image {
+            border: 4px solid #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            height: 320px; /* Diperbesar sedikit tingginya */
+            object-fit: cover;
         }
-
-        /* ================= HERO ================= */
-
-        .hero{
-            height:calc(100vh - 90px);
-            position:relative;
-            overflow:hidden;
-            padding:10px 55px 0;
-        }
-
-        .hero-container{
-            height:100%;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        }
-
-        /* ================= LEFT ================= */
-
-        .left{
-            width:44%;
-            z-index:5;
-            margin-top:-70px;
-        }
-
-        .left h1{
-            font-size:62px;
-            font-weight:800;
-            color:#001B5E;
-            line-height:1;
-        }
-
-        .left h2{
-            margin-top:12px;
-            font-size:32px;
-            line-height:1.3;
-            font-weight:800;
-            color:#001B5E;
-        }
-
-        .left h2 span{
-            color:#2563eb;
-        }
-
-        .left p{
-            margin-top:20px;
-            font-family:'Poppins',sans-serif;
-            font-size:15px;
-            line-height:2;
-            color:#4b5563;
-            max-width:470px;
-            font-weight:500;
-        }
-
-        .buttons{
-            margin-top:28px;
-            display:flex;
-            gap:15px;
-        }
-
-        .btn-primary{
-            background:#2563eb;
-            color:white;
-            text-decoration:none;
-            padding:15px 24px;
-            border-radius:12px;
-            font-size:15px;
-            font-weight:700;
-            box-shadow:0 12px 24px rgba(37,99,235,0.22);
-        }
-
-        .btn-secondary{
-            background:white;
-            border:2px solid #2563eb;
-            color:#2563eb;
-            text-decoration:none;
-            padding:15px 24px;
-            border-radius:12px;
-            font-size:15px;
-            font-weight:700;
-            cursor:pointer;
-        }
-
-        /* ================= RIGHT ================= */
-
-        .right{
-            width:50%;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            position:relative;
-        }
-
-        .circle{
-            position:absolute;
-            width:650px;
-            height:650px;
-            background:#e8f0ff;
-            border-radius:50%;
-            top:-40px;
-            right:-80px;
-            z-index:1;
-        }
-
-        .hero-image{
-            width:100%;
-            max-width:540px;
-            height:360px;
-            border-radius:45px;
-            overflow:hidden;
-            position:relative;
-            z-index:5;
-            margin-top:-30px;
-        }
-
-        .hero-image img{
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            border-radius:45px;
-        }
-
-        /* ================= FEATURES ================= */
-
-        .feature-wrapper{
-            position:absolute;
-            left:50%;
-            transform:translateX(-50%);
-            bottom:20px;
-            width:90%;
-            background:white;
-            border-radius:22px;
-            padding:16px 5px;
-            display:grid;
-            grid-template-columns:repeat(5,1fr);
-            box-shadow:0 10px 30px rgba(0,0,0,0.05);
-            z-index:20;
-        }
-
-        .feature{
-            display:flex;
-            gap:10px;
-            padding:0 14px;
-            border-right:1px solid #edf2f7;
-        }
-
-        .feature:last-child{
-            border-right:none;
-        }
-
-        .icon{
-            width:46px;
-            height:46px;
-            background:#eef4ff;
-            border-radius:14px;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-size:20px;
-            flex-shrink:0;
-        }
-
-        .feature h3{
-            font-size:14px;
-            margin-bottom:5px;
-            color:#111827;
-        }
-
-        .feature p{
-            font-size:10px;
-            line-height:1.8;
-            color:#6b7280;
-            font-family:'Poppins',sans-serif;
-        }
-
-        /* ================= WAVE ================= */
-
-        .wave{
-            position:absolute;
-            width:120%;
-            height:170px;
-            background:linear-gradient(90deg,#2563eb,#3b82f6);
-            left:-10%;
-            bottom:-145px;
-            border-radius:50%;
-            z-index:2;
-        }
-
-        /* ================= MODAL ================= */
-
-        .modal{
-            display:none;
-            position:fixed;
-            z-index:999;
-            left:0;
-            top:0;
-            width:100%;
-            height:100%;
-            background:rgba(0,0,0,0.45);
-            justify-content:center;
-            align-items:center;
-            padding:20px;
-        }
-
-        .modal-content{
-            background:white;
-            width:100%;
-            max-width:560px;
-            padding:35px;
-            border-radius:24px;
-            position:relative;
-            animation:fadeIn 0.3s ease;
-            box-shadow:0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .modal-content h2{
-            font-size:28px;
-            color:#0B2C6A;
-            margin-bottom:20px;
-            font-weight:800;
-        }
-
-        .modal-content p{
-            font-size:15px;
-            line-height:2;
-            color:#4b5563;
-            margin-bottom:15px;
-            font-family:'Poppins',sans-serif;
-        }
-
-        .close{
-            position:absolute;
-            right:22px;
-            top:16px;
-            font-size:32px;
-            cursor:pointer;
-            color:#6b7280;
-        }
-
-        .close:hover{
-            color:#111827;
-        }
-
-        @keyframes fadeIn{
-            from{
-                opacity:0;
-                transform:translateY(20px);
-            }
-            to{
-                opacity:1;
-                transform:translateY(0);
-            }
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media(max-width:1200px){
-
-            body{
-                overflow:auto;
-            }
-
-            .hero{
-                height:auto;
-                padding-bottom:40px;
-            }
-
-            .hero-container{
-                flex-direction:column;
-                text-align:center;
-            }
-
-            .left,
-            .right{
-                width:100%;
-            }
-
-            .buttons{
-                justify-content:center;
-                flex-wrap:wrap;
-            }
-
-            .feature-wrapper{
-                position:relative;
-                width:100%;
-                margin-top:25px;
-                grid-template-columns:1fr;
-                gap:18px;
-                padding:24px;
-            }
-
-            .feature{
-                border-right:none;
-                border-bottom:1px solid #edf2f7;
-                padding-bottom:18px;
-            }
-
-            .feature:last-child{
-                border-bottom:none;
-            }
-
-            .wave{
-                display:none;
-            }
-
-            .left{
-                margin-top:20px;
-            }
-
-            .hero-image{
-                height:320px;
-                margin-top:20px;
-            }
-
-        }
-
     </style>
 </head>
-
 <body>
 
-    <!-- NAVBAR -->
-    <nav>
+    <div class="page-wrapper">
+        <div class="main-content">
 
-        <div class="logo">
-
-            <img src="{{ asset('image/Logo siganda.png') }}" alt="logo">
-
-            <div class="logo-text">
-                <h1>SIGANDA</h1>
-                <p>Sistem Informasi Gawat Darurat</p>
-            </div>
-
-        </div>
-
-        <a href="{{ route('login') }}" class="login-btn">
-            🔒 Login
-        </a>
-
-    </nav>
-
-    <!-- HERO -->
-    <section class="hero">
-
-        <div class="hero-container">
-
-            <!-- LEFT -->
-            <div class="left">
-
-                <h1>SIGANDA</h1>
-
-                <h2>
-                    Sistem Informasi <br>
-                    <span>Gawat Darurat</span>
-                </h2>
-
-                <p>
-                    Solusi digital modern untuk membantu pelayanan pasien
-                    gawat darurat menjadi lebih cepat, aman,
-                    efisien, dan terintegrasi dalam satu sistem.
-                </p>
-
-                <div class="buttons">
-
-                    <a href="{{ route('login') }}" class="btn-primary">
-                        🚀 Mulai Sekarang
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-light bg-white">
+                <div class="container d-flex justify-content-between">
+                    <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+                        <img src="{{ asset('image/Logo siganda.png') }}" alt="Logo" width="80" height="80">
+                        <div>
+                            <h4 class="mb-0 fw-extrabold text-dark" style="font-size: 24px; line-height: 1.1;">SIGANDA</h4>
+                            <small class="text-muted" style="font-size: 12px; letter-spacing: 0.2px;">Sistem Informasi Gawat Darurat</small>
+                        </div>
                     </a>
+                    
+                    <!-- Tombol Kanan Atas -->
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-secondary px-3" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            Tentang Sistem
+                        </button>
+                        <a href="{{ route('login') }}" class="btn btn-sm btn-primary px-3">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                        </a>
+                    </div>
+                </div>
+            </nav>
 
-                    <a href="javascript:void(0)" class="btn-secondary" onclick="openModal()">
-                        ▶ Pelajari Lebih Lanjut
-                    </a>
+            <!-- HERO & FEATURES -->
+            <div class="hero-section d-flex align-items-center">
+                <div class="container pt-4 pb-2">
+                    
+                    <!-- DIUBAH: Proporsi kolom diubah jadi 5 (kiri) dan 7 (kanan) -->
+                    <div class="row align-items-center mb-3">
+                        <div class="col-lg-5 mb-4 mb-lg-0">
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold mb-3" style="font-size: 12px;">
+                                <i class="bi bi-shield-check me-1"></i> Terintegrasi & Aman
+                            </span>
+                            <h1 class="fw-bold text-dark mb-3" style="font-size: 2.5rem; line-height: 1.2;">
+                                Kelola Pelayanan<br>
+                                <span class="text-primary">Gawat Darurat</span>
+                            </h1>
+                            <p class="text-secondary pe-lg-3" style="font-size: 15px; line-height: 1.7;">
+                                SIGANDA membantu rumah sakit mengelola pelayanan pasien IGD 
+                                secara cepat, akurat, dan terintegrasi. Dari triage hingga 
+                                rekam medis, semuanya dalam satu sistem.
+                            </p>
+                        </div>
+
+                        <!-- DIUBAH: Gambar diposisikan di kanan dengan kolom lebih lebar -->
+                        <div class="col-lg-7 d-flex justify-content-end">
+                            <img src="{{ asset('image/igd1.jpg') }}" alt="Unit Gawat Darurat" class="hero-image img-fluid rounded-4">
+                        </div>
+                    </div>
+
+                    <!-- 4 Fitur Utama -->
+                    <div class="row g-3">
+                        <div class="col-xl-3 col-md-6 col-6">
+                            <div class="feature-card p-3 rounded-3 text-center h-100">
+                                <i class="bi bi-speedometer2 fs-4 text-primary"></i>
+                                <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Dashboard</h6>
+                                <small class="text-muted" style="font-size: 11px;">Statistik & data real-time</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-6">
+                            <div class="feature-card p-3 rounded-3 text-center h-100">
+                                <i class="bi bi-heart-pulse fs-4 text-primary"></i>
+                                <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Triage</h6>
+                                <small class="text-muted" style="font-size: 11px;">Prioritas kegawatan</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-6">
+                            <div class="feature-card p-3 rounded-3 text-center h-100">
+                                <i class="bi bi-file-earmark-medical-fill fs-4 text-primary"></i>
+                                <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Rekam Medis</h6>
+                                <small class="text-muted" style="font-size: 11px;">Riwayat tersimpan aman</small>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-6">
+                            <div class="feature-card p-3 rounded-3 text-center h-100">
+                                <i class="bi bi-display fs-4 text-primary"></i>
+                                <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Monitoring</h6>
+                                <small class="text-muted" style="font-size: 11px;">Pantau kondisi pasien</small>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
-
-            </div>
-
-            <!-- RIGHT -->
-            <div class="right">
-
-                <div class="circle"></div>
-
-                <div class="hero-image">
-                    <img src="{{ asset('image/igd.jpg') }}" alt="IGD">
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- FEATURES -->
-        <div class="feature-wrapper">
-
-            <div class="feature">
-
-                <div class="icon">📊</div>
-
-                <div>
-                    <h3>Dashboard</h3>
-                    <p>Ringkasan data pasien dan statistik IGD secara real-time.</p>
-                </div>
-
-            </div>
-
-            <div class="feature">
-
-                <div class="icon">📋</div>
-
-                <div>
-                    <h3>Triage</h3>
-                    <p>Sistem prioritas pasien berdasarkan tingkat kegawatan.</p>
-                </div>
-
-            </div>
-
-            <div class="feature">
-
-                <div class="icon">👤</div>
-
-                <div>
-                    <h3>Registrasi</h3>
-                    <p>Pendaftaran pasien baru dengan cepat dan terintegrasi.</p>
-                </div>
-
-            </div>
-
-            <div class="feature">
-
-                <div class="icon">📁</div>
-
-                <div>
-                    <h3>Rekam Medis</h3>
-                    <p>Penyimpanan riwayat medis pasien secara aman.</p>
-                </div>
-
-            </div>
-
-            <div class="feature">
-
-                <div class="icon">💙</div>
-
-                <div>
-                    <h3>Monitoring</h3>
-                    <p>Pantau kondisi pasien dan aktivitas IGD real-time.</p>
-                </div>
-
             </div>
 
         </div>
-
-        <!-- WAVE -->
-        <div class="wave"></div>
-
-    </section>
-
-    <!-- MODAL -->
-    <div class="modal" id="aboutModal">
-
-        <div class="modal-content">
-
-            <span class="close" onclick="closeModal()">&times;</span>
-
-            <h2>Tentang SIGANDA</h2>
-
-            <p>
-                SIGANDA merupakan Sistem Informasi Gawat Darurat yang dirancang
-                untuk membantu rumah sakit dalam mengelola pelayanan pasien IGD
-                secara cepat, aman, dan terintegrasi.
-            </p>
-
-            <p>
-                Sistem ini mendukung proses triage pasien, registrasi,
-                rekam medis digital, monitoring pelayanan, serta pengelolaan
-                data pasien secara real-time untuk meningkatkan kualitas
-                pelayanan rumah sakit.
-            </p>
-
-            <p>
-                Dengan SIGANDA, proses pelayanan menjadi lebih efisien,
-                meminimalisir kesalahan pencatatan, serta membantu tenaga
-                medis dalam memberikan pelayanan yang lebih optimal.
-            </p>
-
-        </div>
-
     </div>
 
-    <script>
+    <!-- MODAL -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3 shadow">
+                <div class="modal-header border-bottom py-3">
+                    <h5 class="modal-title fw-bold" style="font-size: 18px;">Tentang SIGANDA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-3">
+                    <p style="font-size: 14px; line-height: 1.7;">
+                        SIGANDA merupakan Sistem Informasi Gawat Darurat yang dirancang
+                        untuk membantu rumah sakit dalam mengelola pelayanan pasien IGD
+                        secara cepat, aman, dan terintegrasi.
+                    </p>
+                    <p style="font-size: 14px; line-height: 1.7;">
+                        Sistem ini mendukung proses triage pasien, registrasi,
+                        rekam medis digital, monitoring pelayanan, serta pengelolaan
+                        data pasien secara real-time.
+                    </p>
+                </div>
+                <div class="modal-footer border-top py-2">
+                    <button type="button" class="btn btn-sm btn-light border" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        function openModal(){
-            document.getElementById("aboutModal").style.display = "flex";
-        }
-
-        function closeModal(){
-            document.getElementById("aboutModal").style.display = "none";
-        }
-
-        window.onclick = function(event){
-
-            const modal = document.getElementById("aboutModal");
-
-            if(event.target == modal){
-                modal.style.display = "none";
-            }
-
-        }
-
-    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
