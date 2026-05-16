@@ -28,7 +28,14 @@
 
     <div class="menu">
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">🏠 Dashboard</a>
-        <a href="{{ route('triage') }}" class="{{ request()->routeIs('triage') ? 'active' : '' }}">🚑 Triage</a>
+        
+        <div class="menu-dropdown {{ request()->routeIs('triage') || request()->routeIs('triage.riwayat') ? 'open' : '' }}">
+            <a href="{{ route('triage') }}" class="{{ request()->routeIs('triage') ? 'active' : '' }}">🚑 Triage</a>
+            <div class="submenu">
+                <a href="{{ route('triage.riwayat') }}" class="{{ request()->routeIs('triage.riwayat') ? 'active' : '' }}">🕒 Riwayat Triage</a>
+            </div>
+        </div>
+
         <a href="{{ route('monitoring') }}" class="{{ request()->routeIs('monitoring') ? 'active' : '' }}">📡 Monitoring</a>
     </div>
 
@@ -159,6 +166,25 @@
 .menu a.active{
     background:white;
     color:#2563eb;
+}
+
+/* ================= SUBMENU ================= */
+.submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 25px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+    padding-left: 8px;
+    gap: 4px;
+}
+.menu-dropdown.open .submenu {
+    display: flex;
+}
+.submenu a {
+    font-size: 13px;
+    padding: 8px 12px;
 }
 
 /* ================= LOGOUT ================= */
