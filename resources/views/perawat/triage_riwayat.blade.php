@@ -5,12 +5,7 @@ body { background: #EEF3F8; }
 .dashboard { display: flex; min-height: 100vh; }
 .main { flex: 1; padding: 30px; overflow-x: auto; }
 
-.page-header {
-    margin-bottom: 24px;
-    display: flex; justify-content: space-between; align-items: center;
-}
-.page-header h1 { color: #0A3D91; font-size: 24px; font-weight: 800; margin: 0; }
-.page-header p { color: #64748b; font-size: 14px; margin-top: 5px; }
+
 
 .card { background: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
 
@@ -28,13 +23,7 @@ tr:hover td { background-color: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
-        <div class="page-header">
-            <div>
-                <h1>🕒 Riwayat Triage Pasien</h1>
-                <p>Seluruh riwayat evaluasi urgensi (Triage) pasien yang tersimpan.</p>
-            </div>
-            <a href="{{ route('triage') }}" class="btn-back">⬅️ Kembali ke Form</a>
-        </div>
+        @include('layouts.navbar', ['title' => 'Riwayat Triage'])
 
         <div class="card">
             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
