@@ -30,13 +30,10 @@ tr:hover td { background-color: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-dokter')
     <div class="main">
-
-        <div class="page-header">
-            <div>
-                <h1>📋 Hasil Triage Pasien</h1>
-                <p>Daftar triage yang telah dilakukan oleh perawat. Tentukan tindakan berdasarkan tingkat urgensi.</p>
-            </div>
-        </div>
+        @include('layouts.navbar', [
+            'title' => '📋 Hasil Triage Pasien',
+            'description' => 'Daftar triage yang telah dilakukan oleh perawat. Tentukan tindakan berdasarkan tingkat urgensi.'
+        ])
 
         <div class="card">
             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
