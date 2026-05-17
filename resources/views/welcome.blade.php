@@ -49,8 +49,8 @@
         /* Styling Navbar */
         .navbar {
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
+            padding-top: 0.2rem !important;
+            padding-bottom: 0.2rem !important;
         }
 
         .hero-section {
