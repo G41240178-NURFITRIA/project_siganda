@@ -18,6 +18,13 @@
     margin: 0;
 }
 
+.nav-title p {
+    color: #64748b;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
 .nav-time {
     display: flex;
     align-items: center;
@@ -42,7 +49,10 @@
 
 <div class="top-navbar">
     <div class="nav-title">
-        <h1>{{ $title ?? 'Fitur' }}</h1>
+        <h1>{!! $title ?? 'Fitur' !!}</h1>
+        @if(isset($description))
+        <p>{!! $description !!}</p>
+        @endif
     </div>
 
     <div class="nav-time">

@@ -394,23 +394,10 @@ td {
     <div class="main">
 
         {{-- HEADER --}}
-        <div class="header-top">
-
-            <div class="welcome">
-                <h1>
-                    Selamat datang,
-                    dr {{ auth()->user() ? explode(' ', auth()->user()->name)[0] : '' }}
-                </h1>
-
-                <p>Berikut ringkasan aktivitas Anda hari ini</p>
-            </div>
-
-            <div class="header-time">
-                <span id="tanggal">📅 -</span>
-                <span id="jam">🕒 - WIB</span>
-            </div>
-
-        </div>
+        @include('layouts.navbar', [
+            'title' => 'Selamat datang, dr. ' . (auth()->user() ? explode(' ', auth()->user()->name)[0] : ''),
+            'description' => 'Berikut ringkasan aktivitas Anda hari ini'
+        ])
 
         {{-- STATS --}}
         <div class="stats-row">
