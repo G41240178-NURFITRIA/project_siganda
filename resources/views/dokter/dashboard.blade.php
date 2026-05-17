@@ -449,20 +449,6 @@ td {
 
                 </div>
 
-                <div class="summary-box">
-
-                    <div>
-                        <div class="val-text">
-                            Total Triage Hari Ini
-                        </div>
-
-                        <div class="val-num">
-                            {{ $stats['total_triage'] }}
-                        </div>
-                    </div>
-
-                </div>
-
             </div>
 
             {{-- CHART 2 --}}
@@ -490,18 +476,6 @@ td {
                             <span class="val">{{ $tp }} ({{ round($pp) }}%)</span>
                         </div>
 
-                    </div>
-
-                </div>
-
-                <div class="summary-box">
-
-                    <div class="val-text">
-                        Total Pasien
-                    </div>
-
-                    <div class="val-num">
-                        {{ $tl + $tp }}
                     </div>
 
                 </div>
