@@ -23,7 +23,12 @@ tr:hover td { background-color: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
+        @include('layouts.navbar', [
+            'title' => '🕒 Riwayat Triage',
+            'description' => 'Daftar riwayat pasien yang telah selesai melalui tahap triage'
+        ])
 
+        <a href="{{ route('triage') }}" class="btn-back" style="display:inline-block; margin-bottom: 20px;">⬅️ Kembali ke Triage Utama</a>
 
         <div class="card">
             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
