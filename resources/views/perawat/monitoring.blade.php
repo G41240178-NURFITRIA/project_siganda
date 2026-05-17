@@ -45,13 +45,10 @@ tr:hover { background: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
-
-        <div class="page-header">
-            <div>
-                <h1 style="color: #0A3D91; font-size: 24px; font-weight: 800;">📡 Monitoring Response Time Pasien</h1>
-                <p style="color: #64748b; font-size: 14px; margin-top: 5px;">Pantau durasi tunggu pasien di IGD berdasarkan kategori Triage.</p>
-            </div>
-        </div>
+        @include('layouts.navbar', [
+            'title' => '📡 Monitoring Response Time Pasien',
+            'description' => 'Pantau durasi tunggu pasien di IGD berdasarkan kategori Triage.'
+        ])
 
         @php
             $merah = $triages->where('kategori', 'merah')->count();
