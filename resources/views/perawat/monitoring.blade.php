@@ -120,6 +120,8 @@ tr:hover { background: #f8fafc; }
                                     <button type="submit" name="tindak_lanjut" value="Rawat Inap" onclick="return confirm('Selesaikan observasi: Pasien Masuk Rawat Inap?');" style="padding:6px 10px; background:#eff6ff; color:#2563eb; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(37,99,235,0.1);">🏥 Rawat Inap</button>
                                     
                                     <button type="submit" name="tindak_lanjut" value="Rujuk" onclick="return confirm('Selesaikan observasi: Pasien Dirujuk ke RS Lain?');" style="padding:6px 10px; background:#fdf4ff; color:#c026d3; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(192,38,211,0.1);">🚑 Rujuk</button>
+
+                                    <button type="submit" name="tindak_lanjut" value="Meninggal" onclick="return confirm('Selesaikan observasi: Pasien Meninggal?');" style="padding:6px 10px; background:#fef2f2; color:#dc2626; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(220,38,38,0.1);">💀 Meninggal</button>
                                 </form>
                             </div>
                         </td>

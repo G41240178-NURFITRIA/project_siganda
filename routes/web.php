@@ -172,7 +172,52 @@ Route::middleware([
         ->name('rekam.medis.validasi');
 
     Route::get('/pmik/pelaporan', function () {
-        return view('pmik.pelaporan');
+        $sensusHarian = \App\Models\RekamMedis::whereDate('created_at', today())->count();
+        $kemarin = \App\Models\RekamMedis::whereDate('created_at', today()->subDay())->count();
+        
+        // Menghindari pembagian dengan nol
+        $trendHarian = $kemarin > 0 ? round((($sensusHarian - $kemarin) / $kemarin) * 100) : ($sensusHarian > 0 ? 100 : 0);
+        $trendHarianText = $trendHarian >= 0 ? '▲ ' . $trendHarian . '% naik' : '▼ ' . abs($trendHarian) . '% turun';
+
+        $topDiseases = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')
+            ->select('diagnosa_dokter', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('diagnosa_dokter')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get();
+
+        $totalPenyakit = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')->count();
+
+        $morbiditasBulanan = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->count();
+
+        $bulanLalu = \App\Models\RekamMedis::whereMonth('created_at', today()->subMonth()->format('m'))
+            ->whereYear('created_at', today()->subMonth()->format('Y'))
+            ->count();
+            
+        $trendBulanan = $bulanLalu > 0 ? round((($morbiditasBulanan - $bulanLalu) / $bulanLalu) * 100) : ($morbiditasBulanan > 0 ? 100 : 0);
+        $trendBulananText = $trendBulanan >= 0 ? '▲ ' . $trendBulanan . '% naik' : '▼ ' . abs($trendBulanan) . '% turun';
+
+        $mortalitasBulanan = \App\Models\Triage::whereMonth('updated_at', date('m'))
+            ->whereYear('updated_at', date('Y'))
+            ->where('tindak_lanjut', 'Meninggal')
+            ->count();
+
+        $kematianBulanLalu = \App\Models\Triage::whereMonth('updated_at', today()->subMonth()->format('m'))
+            ->whereYear('updated_at', today()->subMonth()->format('Y'))
+            ->where('tindak_lanjut', 'Meninggal')
+            ->count();
+
+        $trendKematian = $kematianBulanLalu > 0 ? round((($mortalitasBulanan - $kematianBulanLalu) / $kematianBulanLalu) * 100) : ($mortalitasBulanan > 0 ? 100 : 0);
+        $trendKematianText = $trendKematian >= 0 ? '▲ ' . $trendKematian . '% naik' : '▼ ' . abs($trendKematian) . '% turun';
+
+        return view('pmik.pelaporan', compact(
+            'sensusHarian', 'trendHarian', 'trendHarianText', 
+            'topDiseases', 'totalPenyakit',
+            'morbiditasBulanan', 'trendBulanan', 'trendBulananText',
+            'mortalitasBulanan', 'trendKematian', 'trendKematianText'
+        ));
     })->middleware('role:pmik')->name('pmik.pelaporan');
 
 

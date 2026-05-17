@@ -51,10 +51,10 @@ body { background:#EEF2F7; }
                         <span style="color: #3B82F6;">📊</span> Sensus Harian
                     </div>
                 </div>
-                <div class="report-number">124</div>
-                <div class="report-label">Pasien</div>
-                <div class="report-trend">
-                    <span>▲</span> 12% dari kemarin
+                <div class="report-number">{{ $sensusHarian }}</div>
+                <div class="report-label">Pasien (Hari Ini)</div>
+                <div class="report-trend {{ $trendHarian < 0 ? 'down' : '' }}">
+                    {{ $trendHarianText }}
                 </div>
                 <!-- Simple SVG sparkline -->
                 <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
@@ -66,16 +66,21 @@ body { background:#EEF2F7; }
             <div class="report-card border-indigo">
                 <div class="report-header">
                     <div class="report-title">
-                        <span style="color: #6366F1;">📈</span> 10 Besar Penyakit
+                        <span style="color: #6366F1;">📈</span> 5 Besar Penyakit Teratas
                     </div>
-                    <a href="#" class="report-link">Lihat Detail</a>
                 </div>
                 <ul class="disease-list">
-                    <li><span>1. Hipertensi</span> <span>28 (22%)</span></li>
-                    <li><span>2. ISPA</span> <span>21 (17%)</span></li>
-                    <li><span>3. Diare</span> <span>15 (12%)</span></li>
-                    <li><span>4. Gastritis</span> <span>12 (10%)</span></li>
-                    <li><span>5. Lainnya</span> <span>48 (39%)</span></li>
+                    @forelse($topDiseases as $index => $disease)
+                        @php
+                            $percentage = $totalPenyakit > 0 ? round(($disease->total / $totalPenyakit) * 100) : 0;
+                        @endphp
+                        <li>
+                            <span>{{ $index + 1 }}. {{ $disease->diagnosa_dokter }}</span> 
+                            <span>{{ $disease->total }} ({{ $percentage }}%)</span>
+                        </li>
+                    @empty
+                        <li style="color: #9CA3AF; justify-content: center; border: none; margin-top: 10px;">Belum ada data diagnosa.</li>
+                    @endforelse
                 </ul>
             </div>
 
@@ -85,15 +90,31 @@ body { background:#EEF2F7; }
                     <div class="report-title">
                         <span style="color: #06B6D4;">🧬</span> Morbiditas Bulanan
                     </div>
-                    <a href="#" class="report-link">Lihat Detail</a>
                 </div>
-                <div class="report-number">386</div>
-                <div class="report-label">Kasus</div>
-                <div class="report-trend">
-                    <span>▲</span> 15% dari bulan lalu
+                <div class="report-number">{{ $morbiditasBulanan }}</div>
+                <div class="report-label">Kasus (Bulan Ini)</div>
+                <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}">
+                    {{ $trendBulananText }}
                 </div>
                 <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
                     <polyline fill="none" stroke="#22D3EE" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
+                </svg>
+            </div>
+
+            {{-- Mortalitas Bulanan --}}
+            <div class="report-card" style="border-left: 5px solid #EF4444;">
+                <div class="report-header">
+                    <div class="report-title">
+                        <span style="color: #EF4444;">💀</span> Mortalitas Bulanan
+                    </div>
+                </div>
+                <div class="report-number">{{ $mortalitasBulanan }}</div>
+                <div class="report-label">Data Kematian (Bulan Ini)</div>
+                <div class="report-trend {{ $trendKematian < 0 ? 'down' : '' }}">
+                    {{ $trendKematianText }}
+                </div>
+                <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+                    <polyline fill="none" stroke="#F87171" stroke-width="2" points="0,35 20,25 40,30 60,15 80,5 100,0"/>
                 </svg>
             </div>
 
