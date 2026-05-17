@@ -389,7 +389,17 @@ body{
     <div class="main">
 
         {{-- HEADER --}}
-        @include('layouts.navbar', ['title' => 'Selamat datang, Admin'])
+        <div class="topbar">
+            <div>
+                <h1>Selamat datang, Admin</h1>
+                <p>Berikut ringkasan aktivitas Anda hari ini</p>
+            </div>
+
+            <div class="top-info">
+                <span>📅 Rabu, 06 Mei 2026</span>
+                <span>⏱️ 14:20 WIB</span>
+            </div>
+        </div>
 
         {{-- STATS --}}
         <div class="stats-row">
