@@ -41,8 +41,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     @include('layouts.sidebar-pmik')
 
     <div class="main">
-
-
+        @include('layouts.navbar', [
+            'title' => '📋 Data Rekam Medis (PMIK)',
+            'description' => 'Kelola dan validasi data rekam medis seluruh pasien.'
+        ])
         @if(session('success'))
         <div style="background: #D1FAE5; color: #059669; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600;">
             {{ session('success') }}

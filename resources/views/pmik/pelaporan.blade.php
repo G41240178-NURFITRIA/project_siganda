@@ -37,11 +37,10 @@ body { background:#EEF2F7; }
     @include('layouts.sidebar-pmik')
 
     <div class="main">
-
-
-        <div class="top-action">
-            <h2 style="font-size: 22px; font-weight: 700; color: #111827;">Dashboard Pelaporan</h2>
-        </div>
+        @include('layouts.navbar', [
+            'title' => '📊 Dashboard Pelaporan',
+            'description' => 'Lihat statistik sensus harian dan morbiditas pasien.'
+        ])
 
         <div class="reports-container">
             

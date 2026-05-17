@@ -35,7 +35,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     @include('layouts.sidebar-dokter')
 
     <div class="main">
-
+        @include('layouts.navbar', [
+            'title' => '📋 Rekam Medis',
+            'description' => 'Kelola data rekam medis pasien dengan mudah dan cepat.'
+        ])
 
         @if(session('success'))
         <div style="background: #D1FAE5; color: #059669; padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600;">
