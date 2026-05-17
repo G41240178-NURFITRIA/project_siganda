@@ -67,7 +67,9 @@ tr:hover td { background-color: #f8fafc; }
                             @if($t->tindak_lanjut)
                                 @if($t->tindak_lanjut == 'Pulang') <span style="color:#16a34a;">🏠 Pulang</span>
                                 @elseif($t->tindak_lanjut == 'Rawat Inap') <span style="color:#2563eb;">🏥 Rawat Inap</span>
-                                @else <span style="color:#c026d3;">🚑 Rujuk</span>
+                                @elseif($t->tindak_lanjut == 'Rujuk') <span style="color:#c026d3;">🚑 Rujuk</span>
+                                @elseif($t->tindak_lanjut == 'Meninggal') <span style="color:#dc2626;">💀 Meninggal</span>
+                                @else <span style="color:#475569;">{{ $t->tindak_lanjut }}</span>
                                 @endif
                             @else
                                 <span style="color:#94a3b8; font-weight: 500;">-</span>
