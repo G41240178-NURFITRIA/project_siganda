@@ -146,7 +146,7 @@ body { background: #EEF3F8; }
 
     {{-- MAIN CONTENT --}}
     <div class="main">
-        @include('layouts.navbar', ['title' => 'Monitoring Rekam Medis'])
+
         <div class="page-header">
             <div>
                 <h1>📡 Monitoring Rekam Medis (Real-time)</h1>
