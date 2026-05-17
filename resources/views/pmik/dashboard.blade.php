@@ -110,7 +110,16 @@ td { color: #2d3748; }
 
     {{-- MAIN CONTENT --}}
     <div class="main">
-        @include('layouts.navbar', ['title' => 'Selamat datang, PMIK'])
+        <div class="header-top">
+            <div class="welcome">
+                <h1>Selamat datang, PMIK</h1>
+                <p>Berikut ringkasan aktivitas Anda hari ini</p>
+            </div>
+            <div class="header-time">
+                <span>📅 {{ \Carbon\Carbon::now()->isoFormat('dddd, DD MMMM Y') }}</span>
+                <span>🕒 {{ \Carbon\Carbon::now()->format('H:i') }} WIB</span>
+            </div>
+        </div>
 
         {{-- STATS --}}
         <div class="stats-row">
