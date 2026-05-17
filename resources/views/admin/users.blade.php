@@ -183,7 +183,7 @@ tbody td { padding: 14px 16px; font-size: 13px; color: #333; }
 
     {{-- MAIN CONTENT --}}
     <div class="main">
-        @include('layouts.navbar', ['title' => 'Manajemen User'])
+
         <div class="page-header">
             <div>
                 <h1>👥 Manajemen User</h1>
