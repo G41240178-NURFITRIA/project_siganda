@@ -90,6 +90,7 @@ body { background:#EEF2F7; }
                     <div class="report-title">
                         <span style="color: #06B6D4;">🧬</span> Morbiditas Bulanan
                     </div>
+                    <a href="{{ route('pmik.pelaporan.detail') }}" class="report-link" style="font-size: 12px; color: #3B82F6; text-decoration: none; font-weight: 600;">Lihat Detail</a>
                 </div>
                 <div class="report-number">{{ $morbiditasBulanan }}</div>
                 <div class="report-label">Kasus (Bulan Ini)</div>
