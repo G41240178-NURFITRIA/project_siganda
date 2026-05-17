@@ -393,9 +393,8 @@ td {
 
     <div class="main">
 
-        {{-- HEADER --}}
         @include('layouts.navbar', [
-            'title' => 'Selamat datang, dr. ' . (auth()->user() ? explode(' ', auth()->user()->name)[0] : ''),
+            'title' => '👋 Selamat datang, Dokter!',
             'description' => 'Berikut ringkasan aktivitas Anda hari ini'
         ])
 

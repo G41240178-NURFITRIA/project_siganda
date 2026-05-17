@@ -388,9 +388,8 @@ body{
     {{-- MAIN --}}
     <div class="main">
 
-        {{-- HEADER --}}
         @include('layouts.navbar', [
-            'title' => 'Selamat datang, Admin',
+            'title' => '👋 Selamat datang, Admin!',
             'description' => 'Berikut ringkasan aktivitas Anda hari ini'
         ])
 

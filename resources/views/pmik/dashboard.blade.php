@@ -111,7 +111,7 @@ td { color: #2d3748; }
     {{-- MAIN CONTENT --}}
     <div class="main">
         @include('layouts.navbar', [
-            'title' => 'Selamat datang, PMIK',
+            'title' => '👋 Selamat datang, PMIK!',
             'description' => 'Berikut ringkasan aktivitas Anda hari ini'
         ])
 

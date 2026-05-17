@@ -476,9 +476,8 @@ td{
     {{-- MAIN --}}
     <div class="main">
 
-        {{-- HEADER --}}
         @include('layouts.navbar', [
-            'title' => 'Selamat datang, Perawat',
+            'title' => '👋 Selamat datang, Perawat!',
             'description' => 'Berikut ringkasan aktivitas Anda hari ini'
         ])
 
