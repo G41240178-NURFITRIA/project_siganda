@@ -183,13 +183,10 @@ tbody td { padding: 14px 16px; font-size: 13px; color: #333; }
 
     {{-- MAIN CONTENT --}}
     <div class="main">
-
-        <div class="page-header">
-            <div>
-                <h1>👥 Manajemen User</h1>
-                <p>Kelola semua akun pengguna SIGANDA</p>
-            </div>
-        </div>
+        @include('layouts.navbar', [
+            'title' => '👥 Manajemen User',
+            'description' => 'Kelola semua akun pengguna SIGANDA'
+        ])
 
         {{-- ALERTS --}}
         @if(session('success'))

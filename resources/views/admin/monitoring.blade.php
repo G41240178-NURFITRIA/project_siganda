@@ -146,13 +146,13 @@ body { background: #EEF3F8; }
 
     {{-- MAIN CONTENT --}}
     <div class="main">
-
-        <div class="page-header">
-            <div>
-                <h1>📡 Monitoring Rekam Medis (Real-time)</h1>
-                <p>Pantau antrean pasien dan status rekam medis terkini secara langsung.</p>
-            </div>
-            <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 10px 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+        @include('layouts.navbar', [
+            'title' => '📡 Monitoring Rekam Medis (Real-time)',
+            'description' => 'Pantau antrean pasien dan status rekam medis terkini secara langsung.'
+        ])
+        
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px; background: #fff; padding: 10px 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                 <div class="pulse-dot"></div>
                 <span style="font-size: 13px; font-weight: 600; color: #334155;">Sistem Aktif</span>
             </div>
