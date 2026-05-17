@@ -23,7 +23,7 @@ tr:hover td { background-color: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
-        @include('layouts.navbar', ['title' => 'Riwayat Triage'])
+
 
         <div class="card">
             <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
