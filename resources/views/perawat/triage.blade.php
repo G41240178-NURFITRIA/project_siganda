@@ -48,11 +48,7 @@ body { background: #EEF3F8; }
             'description' => 'Masukkan data pasien dan evaluasi tingkat urgensi.'
         ])
         
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-            <a href="{{ route('triage.riwayat') }}" style="text-decoration: none; background: #0ea5e9; color: white; padding: 12px 20px; border-radius: 10px; font-weight: 700; box-shadow: 0 4px 6px rgba(14,165,233,0.2); display: inline-block;">
-                🕒 Riwayat Hasil
-            </a>
-        </div>
+
 
         @if(session('success'))
         <div style="background: #dcfce7; color: #15803d; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; border-left: 5px solid #22c55e;">
