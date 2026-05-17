@@ -43,12 +43,12 @@ body { background: #EEF3F8; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
-
-        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h1 style="color: #0A3D91; font-size: 24px; font-weight: 800; margin: 0;">📋 Form Input Triage</h1>
-                <p style="color: #64748b; font-size: 14px; margin-top: 5px;">Masukkan data pasien dan evaluasi tingkat urgensi.</p>
-            </div>
+        @include('layouts.navbar', [
+            'title' => '📋 Form Input Triage',
+            'description' => 'Masukkan data pasien dan evaluasi tingkat urgensi.'
+        ])
+        
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
             <a href="{{ route('triage.riwayat') }}" style="text-decoration: none; background: #0ea5e9; color: white; padding: 12px 20px; border-radius: 10px; font-weight: 700; box-shadow: 0 4px 6px rgba(14,165,233,0.2); display: inline-block;">
                 🕒 Riwayat Hasil
             </a>
