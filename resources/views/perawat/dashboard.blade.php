@@ -477,19 +477,7 @@ td{
     <div class="main">
 
         {{-- HEADER --}}
-        <div class="header-top">
-
-            <div class="welcome">
-                <h1>Selamat datang, Perawat</h1>
-                <p>Berikut ringkasan aktivitas Anda hari ini</p>
-            </div>
-
-            <div class="header-time">
-                <span>📅 Rabu, 06 Mei 2026</span>
-                <span>🕙 10:30 WIB</span>
-            </div>
-
-        </div>
+        @include('layouts.navbar', ['title' => 'Selamat datang, Perawat'])
 
         {{-- STATS --}}
         <div class="stats-row">
