@@ -45,6 +45,7 @@ tr:hover { background: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
+        @include('layouts.navbar', ['title' => 'Monitoring Response Time Pasien'])
         <div class="page-header">
             <div>
                 <h1 style="color: #0A3D91; font-size: 24px; font-weight: 800;">📡 Monitoring Response Time Pasien</h1>
