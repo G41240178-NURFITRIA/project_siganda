@@ -30,7 +30,6 @@
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">🏠 Dashboard</a>
         <a href="{{ route('triage') }}" class="{{ request()->routeIs('triage') ? 'active' : '' }}">🚑 Triage</a>
         <a href="{{ route('rekam.medis.index') }}" class="{{ request()->routeIs('rekam.medis.*') ? 'active' : '' }}">📋 Rekam Medis</a>
-        <a href="{{ route('monitoring') }}" class="{{ request()->routeIs('monitoring') ? 'active' : '' }}">📡 Monitoring</a>
     </div>
 
     <!-- AKUN -->
