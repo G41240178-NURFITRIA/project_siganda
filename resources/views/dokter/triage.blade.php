@@ -30,6 +30,7 @@ tr:hover td { background-color: #f8fafc; }
 <div class="dashboard">
     @include('layouts.sidebar-dokter')
     <div class="main">
+        @include('layouts.navbar', ['title' => 'Hasil Triage Pasien'])
         <div class="page-header">
             <div>
                 <h1>📋 Hasil Triage Pasien</h1>
