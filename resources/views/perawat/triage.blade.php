@@ -43,7 +43,7 @@ body { background: #EEF3F8; }
 <div class="dashboard">
     @include('layouts.sidebar-perawat')
     <div class="main">
-        @include('layouts.navbar', ['title' => 'Form Input Triage'])
+
         <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <h1 style="color: #0A3D91; font-size: 24px; font-weight: 800; margin: 0;">📋 Form Input Triage</h1>
