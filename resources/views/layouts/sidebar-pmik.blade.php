@@ -48,8 +48,6 @@
             </div>
         </div>
 
-        <a href="{{ route('monitoring') }}" class="{{ request()->routeIs('monitoring') ? 'active' : '' }}">📡 Monitoring</a>
-
     </div>
 
     <!-- AKUN -->
