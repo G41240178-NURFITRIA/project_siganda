@@ -37,7 +37,7 @@ body { background:#EEF2F7; }
     @include('layouts.sidebar-pmik')
 
     <div class="main">
-        @include('layouts.navbar', ['title' => 'Pelaporan Rekam Medis'])
+
 
         <div class="top-action">
             <h2 style="font-size: 22px; font-weight: 700; color: #111827;">Dashboard Pelaporan</h2>
