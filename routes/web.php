@@ -220,36 +220,7 @@ Route::middleware([
         ));
     })->middleware('role:pmik')->name('pmik.pelaporan');
 
-    Route::get('/pmik/pelaporan/detail', function () {
-        // Ambil rekam medis bulan ini, kelompokkan berdasarkan diagnosa
-        $morbiditas = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
-            ->whereYear('created_at', date('Y'))
-            ->whereNotNull('diagnosa_dokter')
-            ->select('diagnosa_dokter')
-            ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when jenis_kelamin = "L" then 1 else 0 end) as laki_laki')
-            ->selectRaw('sum(case when jenis_kelamin = "P" then 1 else 0 end) as perempuan')
-            ->groupBy('diagnosa_dokter')
-            ->orderByDesc('total')
-            ->get();
-            
-        return view('pmik.pelaporan_detail', compact('morbiditas'));
-    })->middleware('role:pmik')->name('pmik.pelaporan.detail');
 
-    Route::get('/pmik/pelaporan/cetak', function () {
-        $morbiditas = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
-            ->whereYear('created_at', date('Y'))
-            ->whereNotNull('diagnosa_dokter')
-            ->select('diagnosa_dokter')
-            ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when jenis_kelamin = "L" then 1 else 0 end) as laki_laki')
-            ->selectRaw('sum(case when jenis_kelamin = "P" then 1 else 0 end) as perempuan')
-            ->groupBy('diagnosa_dokter')
-            ->orderByDesc('total')
-            ->get();
-            
-        return view('pmik.pelaporan_cetak', compact('morbiditas'));
-    })->middleware('role:pmik')->name('pmik.pelaporan.cetak');
 
 
     Route::get('/monitoring', function () {
