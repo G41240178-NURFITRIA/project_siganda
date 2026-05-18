@@ -186,9 +186,8 @@
                         secara cepat, aman, dan terintegrasi.
                     </p>
                     <p style="font-size: 14px; line-height: 1.7;">
-                        Sistem ini mendukung proses triage pasien, registrasi,
-                        rekam medis digital, monitoring pelayanan, serta pengelolaan
-                        data pasien secara real-time.
+                        Sistem ini mendukung proses triage pasien, rekam medis digital, 
+                        monitoring pelayanan, serta pengelolaan data pasien secara real-time.
                     </p>
                 </div>
                 <div class="modal-footer border-top py-2">
