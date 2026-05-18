@@ -55,7 +55,7 @@ tr:hover td { background-color: #F8FAFC; }
 
             <div class="top-action action-area">
                 <h3 style="color: #111827; font-size: 18px;">Daftar Distribusi Penyakit</h3>
-                <button onclick="window.print()" class="btn-print">🖨️ Cetak Laporan</button>
+                <a href="{{ route('pmik.pelaporan.cetak') }}" target="_blank" class="btn-print" style="text-decoration: none;">🖨️ Cetak Laporan</a>
             </div>
 
             <table>
