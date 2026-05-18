@@ -63,19 +63,19 @@ body { background:#EEF2F7; }
             </div>
 
             {{-- Morbiditas Bulan Ini --}}
-            <div class="report-card border-indigo">
+            <div class="report-card border-indigo" style="border-left: 5px solid #10B981;">
                 <div class="report-header">
                     <div class="report-title">
-                        <span style="color: #6366F1;">🧬</span> Morbiditas Bulan Ini
+                        <span style="color: #10B981;">🤍</span> 10 Besar Morbiditas
                     </div>
                 </div>
                 <div class="report-number">{{ $morbiditasBulanan }}</div>
-                <div class="report-label">Total Kasus Morbiditas (Bulan Ini)</div>
+                <div class="report-label">Kasus Bulan Ini</div>
                 <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}">
                     {{ $trendBulananText }}
                 </div>
                 <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
-                    <polyline fill="none" stroke="#818CF8" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
+                    <polyline fill="none" stroke="#34D399" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
                 </svg>
             </div>
 
@@ -83,11 +83,11 @@ body { background:#EEF2F7; }
             <div class="report-card" style="border-left: 5px solid #EF4444;">
                 <div class="report-header">
                     <div class="report-title">
-                        <span style="color: #EF4444;">💀</span> Mortalitas Bulanan
+                        <span style="color: #EF4444;">💀</span> 10 Besar Mortalitas
                     </div>
                 </div>
                 <div class="report-number">{{ $mortalitasBulanan }}</div>
-                <div class="report-label">Data Kematian (Bulan Ini)</div>
+                <div class="report-label">Data Kematian Bulan Ini</div>
                 <div class="report-trend {{ $trendKematian < 0 ? 'down' : '' }}">
                     {{ $trendKematianText }}
                 </div>
