@@ -62,13 +62,23 @@ body { background:#EEF2F7; }
                 </svg>
             </div>
 
-            {{-- 10 Besar Penyakit --}}
-            <div class="report-card border-indigo">
+            {{-- Morbiditas & 10 Besar Penyakit --}}
+            <div class="report-card border-indigo" style="flex: 2; min-width: 350px;">
                 <div class="report-header">
                     <div class="report-title">
-                        <span style="color: #6366F1;">📈</span> 5 Besar Penyakit Teratas
+                        <span style="color: #6366F1;">🧬</span> Morbiditas Bulan Ini
                     </div>
                 </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
+                    <div>
+                        <div class="report-number">{{ $morbiditasBulanan }}</div>
+                        <div class="report-label">Total Kasus Morbiditas (Bulan Ini)</div>
+                    </div>
+                    <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}" style="margin-bottom: 5px;">
+                        {{ $trendBulananText }}
+                    </div>
+                </div>
+                <hr style="border: 0; border-top: 1px dashed #E5E7EB; margin-bottom: 15px;">
                 <ul class="disease-list">
                     @forelse($topDiseases as $index => $disease)
                         @php
@@ -82,24 +92,6 @@ body { background:#EEF2F7; }
                         <li style="color: #9CA3AF; justify-content: center; border: none; margin-top: 10px;">Belum ada data diagnosa.</li>
                     @endforelse
                 </ul>
-            </div>
-
-            {{-- Morbiditas Bulanan --}}
-            <div class="report-card border-cyan">
-                <div class="report-header">
-                    <div class="report-title">
-                        <span style="color: #06B6D4;">🧬</span> Morbiditas Bulanan
-                    </div>
-                    <a href="{{ route('pmik.pelaporan.detail') }}" class="report-link" style="font-size: 12px; color: #3B82F6; text-decoration: none; font-weight: 600;">Lihat Detail</a>
-                </div>
-                <div class="report-number">{{ $morbiditasBulanan }}</div>
-                <div class="report-label">Kasus (Bulan Ini)</div>
-                <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}">
-                    {{ $trendBulananText }}
-                </div>
-                <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
-                    <polyline fill="none" stroke="#22D3EE" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
-                </svg>
             </div>
 
             {{-- Mortalitas Bulanan --}}
