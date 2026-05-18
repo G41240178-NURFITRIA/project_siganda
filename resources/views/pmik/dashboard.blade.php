@@ -211,22 +211,25 @@ td { color: #2d3748; }
 
         {{-- BOTTOM --}}
         @php
-            $pctValid = $totalRm > 0 ? round(($rmValid / $totalRm) * 100) : 0;
-            $pctMenunggu = $totalRm > 0 ? round(($rmMenunggu / $totalRm) * 100) : 0;
-            $pctDitolak = $totalRm > 0 ? round(($rmDitolak / $totalRm) * 100) : 0;
+            // Validasi Data (hanya Valid & Menunggu)
+            $totalValidasi = $rmValid + $rmMenunggu;
+            $pctValid = $totalValidasi > 0 ? round(($rmValid / $totalValidasi) * 100) : 0;
+            $pctMenunggu = $totalValidasi > 0 ? round(($rmMenunggu / $totalValidasi) * 100) : 0;
 
             $vStop = $pctValid / 2;
             $mStop = $vStop + ($pctMenunggu / 2);
-            $dStop = $mStop + ($pctDitolak / 2);
 
-            $totTindak = $tlRawatInap + $tlPulang + $tlRujuk;
+            $halfDonutBg = $totalValidasi == 0 ? "conic-gradient(from -90deg at 50% 100%, #e2e8f0 0% 50%, transparent 50%)" : "conic-gradient(from -90deg at 50% 100%, #48bb78 0% {$vStop}%, #ecc94b {$vStop}% {$mStop}%, transparent 50%)";
+
+            // Tindak Lanjut Pasien (4 kategori)
+            $totTindak = $tlRawatInap + $tlPulang + $tlRujuk + ($tlMeninggal ?? 0);
             $totTindakSafe = $totTindak > 0 ? $totTindak : 1;
             
             $pStop1 = ($tlPulang / $totTindakSafe) * 100;
             $pStop2 = $pStop1 + (($tlRawatInap / $totTindakSafe) * 100);
+            $pStop3 = $pStop2 + (($tlRujuk / $totTindakSafe) * 100);
             
-            $donutBg = $totTindak == 0 ? '#e2e8f0' : "conic-gradient(#48bb78 0% {$pStop1}%, #3182ce {$pStop1}% {$pStop2}%, #f59e0b {$pStop2}% 100%)";
-            $halfDonutBg = $totalRm == 0 ? "conic-gradient(from -90deg at 50% 100%, #e2e8f0 0% 50%, transparent 50%)" : "conic-gradient(from -90deg at 50% 100%, #48bb78 0% {$vStop}%, #ecc94b {$vStop}% {$mStop}%, #dc2626 {$mStop}% 50%, transparent 50%)";
+            $donutBg = $totTindak == 0 ? '#e2e8f0' : "conic-gradient(#48bb78 0% {$pStop1}%, #3182ce {$pStop1}% {$pStop2}%, #f59e0b {$pStop2}% {$pStop3}%, #dc2626 {$pStop3}% 100%)";
         @endphp
         <div class="bottom-row">
             <div class="card">
@@ -237,6 +240,7 @@ td { color: #2d3748; }
                         <div><div class="dot dot-green"></div> Pulang ({{ $tlPulang ?? 0 }})</div>
                         <div><div class="dot dot-blue"></div> Rawat Inap ({{ $tlRawatInap ?? 0 }})</div>
                         <div><div class="dot dot-yellow"></div> Rujuk ({{ $tlRujuk ?? 0 }})</div>
+                        <div><div class="dot" style="background:#dc2626;"></div> Meninggal ({{ $tlMeninggal ?? 0 }})</div>
                     </div>
                 </div>
             </div>
@@ -252,7 +256,6 @@ td { color: #2d3748; }
                     <div class="legend" style="margin-left: auto;">
                         <div style="justify-content: space-between; width: 170px;"><span style="display:flex; align-items:center; gap:8px;"><div class="dot dot-green"></div> Tervalidasi</span> <span>{{ $pctValid }}%</span></div>
                         <div style="justify-content: space-between; width: 170px;"><span style="display:flex; align-items:center; gap:8px;"><div class="dot dot-yellow"></div> Menunggu</span> <span>{{ $pctMenunggu }}%</span></div>
-                        <div style="justify-content: space-between; width: 170px;"><span style="display:flex; align-items:center; gap:8px;"><div class="dot" style="background:#dc2626;"></div> Ditolak</span> <span>{{ $pctDitolak }}%</span></div>
                     </div>
                 </div>
             </div>
