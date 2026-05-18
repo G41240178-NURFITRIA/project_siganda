@@ -61,7 +61,8 @@ Route::middleware([
             $tlPulang = \App\Models\Triage::where('tindak_lanjut', 'Pulang')->count();
             $tlRawatInap = \App\Models\Triage::where('tindak_lanjut', 'Rawat Inap')->count();
             $tlRujuk = \App\Models\Triage::where('tindak_lanjut', 'Rujuk')->count();
-            return view('pmik.dashboard', compact('rekamMedis', 'totalRm', 'rmMenunggu', 'rmValid', 'rmDitolak', 'pasienDirawat', 'tlPulang', 'tlRawatInap', 'tlRujuk'));
+            $tlMeninggal = \App\Models\Triage::where('tindak_lanjut', 'Meninggal')->count();
+            return view('pmik.dashboard', compact('rekamMedis', 'totalRm', 'rmMenunggu', 'rmValid', 'rmDitolak', 'pasienDirawat', 'tlPulang', 'tlRawatInap', 'tlRujuk', 'tlMeninggal'));
         }
         if ($user->isDokter()) {
             $rekamMedis = \App\Models\RekamMedis::latest()->take(5)->get();
