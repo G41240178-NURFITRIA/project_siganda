@@ -183,7 +183,7 @@ Route::middleware([
             ->select('diagnosa_dokter', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
             ->groupBy('diagnosa_dokter')
             ->orderByDesc('total')
-            ->take(5)
+            ->take(10)
             ->get();
 
         $totalPenyakit = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')->count();
@@ -235,6 +235,21 @@ Route::middleware([
             
         return view('pmik.pelaporan_detail', compact('morbiditas'));
     })->middleware('role:pmik')->name('pmik.pelaporan.detail');
+
+    Route::get('/pmik/pelaporan/cetak', function () {
+        $morbiditas = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->whereNotNull('diagnosa_dokter')
+            ->select('diagnosa_dokter')
+            ->selectRaw('count(*) as total')
+            ->selectRaw('sum(case when jenis_kelamin = "L" then 1 else 0 end) as laki_laki')
+            ->selectRaw('sum(case when jenis_kelamin = "P" then 1 else 0 end) as perempuan')
+            ->groupBy('diagnosa_dokter')
+            ->orderByDesc('total')
+            ->get();
+            
+        return view('pmik.pelaporan_cetak', compact('morbiditas'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.cetak');
 
 
     Route::get('/monitoring', function () {
