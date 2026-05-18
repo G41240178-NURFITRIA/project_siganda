@@ -508,20 +508,6 @@ td {
 
                 </div>
 
-                <div class="card">
-
-                    <div class="card-header">
-                        Ringkasan Tindakan Medis
-                    </div>
-
-                    <ul class="action-list">
-                        <li>Pemberian Diagnosa <span class="badge">{{ $diagnosaTotal ?? 0 }}</span></li>
-                        <li>Tindakan Medis/Terapi <span class="badge">{{ $tindakanTotal ?? 0 }}</span></li>
-                        <li class="total">Total Rekam Medis Hari Ini <span class="badge">{{ \App\Models\RekamMedis::whereDate('created_at', today())->count() }}</span></li>
-                    </ul>
-
-                </div>
-
             </div>
 
         </div>
