@@ -282,7 +282,7 @@ tbody td { padding: 14px 16px; font-size: 13px; color: #333; }
             <div class="table-header">
                 <h2>Daftar Pengguna</h2>
                 <div class="search-box">
-                    🔍 <input type="text" id="searchInput" placeholder="Cari nama / email..." onkeyup="filterTable()">
+                    🔍 <input type="text" id="searchInput" placeholder="Cari nama / email" onkeyup="filterTable()">
                 </div>
             </div>
 
