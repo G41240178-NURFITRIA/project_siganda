@@ -62,36 +62,21 @@ body { background:#EEF2F7; }
                 </svg>
             </div>
 
-            {{-- Morbiditas & 10 Besar Penyakit --}}
-            <div class="report-card border-indigo" style="flex: 2; min-width: 350px;">
+            {{-- Morbiditas Bulan Ini --}}
+            <div class="report-card border-indigo">
                 <div class="report-header">
                     <div class="report-title">
                         <span style="color: #6366F1;">🧬</span> Morbiditas Bulan Ini
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;">
-                    <div>
-                        <div class="report-number">{{ $morbiditasBulanan }}</div>
-                        <div class="report-label">Total Kasus Morbiditas (Bulan Ini)</div>
-                    </div>
-                    <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}" style="margin-bottom: 5px;">
-                        {{ $trendBulananText }}
-                    </div>
+                <div class="report-number">{{ $morbiditasBulanan }}</div>
+                <div class="report-label">Total Kasus Morbiditas (Bulan Ini)</div>
+                <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}">
+                    {{ $trendBulananText }}
                 </div>
-                <hr style="border: 0; border-top: 1px dashed #E5E7EB; margin-bottom: 15px;">
-                <ul class="disease-list">
-                    @forelse($topDiseases as $index => $disease)
-                        @php
-                            $percentage = $totalPenyakit > 0 ? round(($disease->total / $totalPenyakit) * 100) : 0;
-                        @endphp
-                        <li>
-                            <span>{{ $index + 1 }}. {{ $disease->diagnosa_dokter }}</span> 
-                            <span>{{ $disease->total }} ({{ $percentage }}%)</span>
-                        </li>
-                    @empty
-                        <li style="color: #9CA3AF; justify-content: center; border: none; margin-top: 10px;">Belum ada data diagnosa.</li>
-                    @endforelse
-                </ul>
+                <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
+                    <polyline fill="none" stroke="#818CF8" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
+                </svg>
             </div>
 
             {{-- Mortalitas Bulanan --}}
