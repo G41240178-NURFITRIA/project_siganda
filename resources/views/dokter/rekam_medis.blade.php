@@ -46,23 +46,15 @@ textarea.form-control { resize: vertical; min-height: 80px; }
         </div>
         @endif
 
-        {{-- LIST VIEW --}}
-        <div x-show="!showForm" class="card">
-            <div class="top-action">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="background: #FEF3C7; padding: 10px; border-radius: 10px; display: flex; align-items: center;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-                    </div>
-                    <h2 style="font-size: 18px; font-weight: 700;">Data Rekam Medis</h2>
-                </div>
-                
-                <div style="display: flex; gap: 15px;">
-                    <div class="search-bar">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                        <input type="text" placeholder="Cari pasien...">
-                    </div>
-                    </div>
-                    <!-- Tombol Tambah dihapus karena identitas diisi otomatis dari pendaftaran PMIK -->
+        {{-- TABLE VIEW --}}
+        <div class="card" x-show="!showForm && !showDetail">
+            <div class="card-header">
+                Daftar Pasien & Rekam Medis
+                <div class="top-action">
+                    <form action="{{ route('rekam.medis.index') }}" method="GET" style="display:flex; gap:10px;">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama atau no rekam medis..." value="{{ request('search') }}" style="width: 300px;">
+                        <button type="submit" class="btn-primary" style="padding: 10px 15px;">Cari</button>
+                    </form>
                 </div>
             </div>
 
@@ -107,8 +99,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
         </div>
 
         {{-- FORM VIEW (Pemeriksaan) --}}
-        <div x-show="showForm" style="display: none;">
-            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111827;">Pemeriksaan & Pengisian Rekam Medis</h2>
+        <div class="card" x-show="showForm" style="display: none;">
+            <div class="card-header" style="justify-content: flex-start;">
+                <button type="button" @click="showForm = false" style="background: none; border: none; cursor: pointer; font-size: 20px; margin-right: 15px; color: #4B5563;">⬅️</button>
+                Pemeriksaan & Pengisian Rekam Medis
+            </div>
             
             <form :action="'{{ url('rekam-medis') }}/' + editData.id" method="POST" class="form-section">
                 @csrf
@@ -178,71 +173,68 @@ textarea.form-control { resize: vertical; min-height: 80px; }
             </form>
         </div>
 
-        {{-- MODAL DETAIL REKAM MEDIS --}}
-        <div x-show="showDetail" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-            <div @click.away="showDetail = false" style="background:#fff; width:600px; max-width:90%; border-radius:16px; padding:25px; box-shadow:0 10px 25px rgba(0,0,0,0.2); max-height:90vh; overflow-y:auto;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h2 style="font-size: 20px; font-weight: 700; color: #111827;">👁️ Detail Rekam Medis</h2>
-                    <button @click="showDetail = false" style="background:none; border:none; font-size:24px; cursor:pointer; color:#6B7280; line-height:1;">&times;</button>
-                </div>
-                <div class="form-section" style="margin-bottom: 0;">
-                    <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Identitas Pasien</h3>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>No. Rekam Medis</label>
-                            <input type="text" :value="detailData.no_rm" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>NIK</label>
-                            <input type="text" :value="detailData.nik" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Nama Pasien</label>
-                            <input type="text" :value="detailData.nama_pasien" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Tanggal Lahir</label>
-                            <input type="date" :value="detailData.tanggal_lahir" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Jenis Kelamin</label>
-                            <input type="text" :value="detailData.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>No. Telepon</label>
-                            <input type="text" :value="detailData.no_telepon" class="form-control" readonly>
-                        </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label>Alamat</label>
-                            <textarea class="form-control" readonly x-text="detailData.alamat" style="min-height:60px;"></textarea>
-                        </div>
-                    </div>
-
-                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Anamnesa</h3>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label>Keluhan Utama</label>
-                        <textarea class="form-control" readonly x-text="detailData.keluhan_utama"></textarea>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label>Riwayat Penyakit</label>
-                        <textarea class="form-control" readonly x-text="detailData.riwayat_penyakit"></textarea>
-                    </div>
-
-                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Diagnosa</h3>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label>Diagnosa Dokter</label>
-                        <input type="text" :value="detailData.diagnosa_dokter" class="form-control" readonly>
-                    </div>
-
-                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Tindakan</h3>
+        {{-- DETAIL VIEW --}}
+        <div class="card" x-show="showDetail" style="display: none;">
+            <div class="card-header" style="justify-content: flex-start;">
+                <button type="button" @click="showDetail = false" style="background: none; border: none; cursor: pointer; font-size: 20px; margin-right: 15px; color: #4B5563;">⬅️</button>
+                Detail Lengkap Rekam Medis Pasien
+            </div>
+            
+            <div class="form-section" style="border-color: #6B7280; margin-bottom: 0;">
+                <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Identitas Pasien</h3>
+                <div class="grid-2">
                     <div class="form-group">
-                        <label>Tindakan Dokter</label>
-                        <input type="text" :value="detailData.tindakan_dokter" class="form-control" readonly>
+                        <label>No. Rekam Medis</label>
+                        <input type="text" :value="detailData.no_rm" class="form-control" readonly>
                     </div>
+                    <div class="form-group">
+                        <label>NIK</label>
+                        <input type="text" :value="detailData.nik" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Pasien</label>
+                        <input type="text" :value="detailData.nama_pasien" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir</label>
+                        <input type="date" :value="detailData.tanggal_lahir" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Jenis Kelamin</label>
+                        <input type="text" :value="detailData.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>No. Telepon</label>
+                        <input type="text" :value="detailData.no_telepon" class="form-control" readonly>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Alamat</label>
+                        <textarea class="form-control" readonly x-text="detailData.alamat" style="min-height:40px; resize:vertical;"></textarea>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg> Anamnesa</h3>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Keluhan Utama</label>
+                    <textarea class="form-control" readonly x-text="detailData.keluhan_utama" style="min-height:60px;"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Riwayat Penyakit</label>
+                    <textarea class="form-control" readonly x-text="detailData.riwayat_penyakit" style="min-height:60px;"></textarea>
+                </div>
+
+                <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Diagnosa & Tindakan</h3>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Diagnosa Dokter</label>
+                    <input type="text" :value="detailData.diagnosa_dokter" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Tindakan Dokter</label>
+                    <input type="text" :value="detailData.tindakan_dokter" class="form-control" readonly>
                 </div>
                 
-                <div style="display:flex; justify-content:flex-end; margin-top:20px;">
-                    <button @click="showDetail = false" style="background:#E5E7EB; color:#374151; padding:8px 16px; border-radius:8px; border:none; font-weight:600; cursor:pointer;">Tutup</button>
+                <div class="action-buttons">
+                    <button type="button" @click="showDetail = false" class="btn-secondary" style="background:#6B7280;">Tutup Kembali</button>
                 </div>
             </div>
         </div>
