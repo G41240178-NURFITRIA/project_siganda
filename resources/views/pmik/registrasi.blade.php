@@ -31,7 +31,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
 
         <div class="card">
             <div class="card-header">
-                🏥 Form Registrasi Pasien Baru
+                🏥 Form Registrasi Pasien
             </div>
 
             @if(session('success'))
@@ -44,7 +44,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 @csrf
 
                 <div class="form-group">
-                    <label class="form-label">No Rekam Medis (Otomatis & Paten)</label>
+                    <label class="form-label">No Rekam Medis</label>
                     <input type="text" name="no_rm" class="form-control" value="{{ $nextRm }}" readonly required>
                 </div>
 
@@ -70,7 +70,7 @@ textarea.form-control { min-height: 100px; resize: vertical; }
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">No. Telepon (Opsional)</label>
+                    <label class="form-label">No. Telepon</label>
                     <input type="text" name="no_telepon" class="form-control" placeholder="Contoh: 08123456789">
                 </div>
 
