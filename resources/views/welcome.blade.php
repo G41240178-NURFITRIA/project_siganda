@@ -133,30 +133,37 @@
                         </div>
                     </div>
 
-                    <!-- 4 Fitur Utama -->
-                    <div class="row g-3">
-                        <div class="col-xl-3 col-md-6 col-6">
+                    <!-- 5 Fitur Utama -->
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-xl col-md-4 col-6">
                             <div class="feature-card p-3 rounded-3 text-center h-100">
                                 <i class="bi bi-speedometer2 fs-4 text-primary"></i>
                                 <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Dashboard</h6>
                                 <small class="text-muted" style="font-size: 11px;">Statistik & data real-time</small>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-md-6 col-6">
+                        <div class="col-xl col-md-4 col-6">
+                            <div class="feature-card p-3 rounded-3 text-center h-100">
+                                <i class="bi bi-person-lines-fill fs-4 text-primary"></i>
+                                <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Pendaftaran</h6>
+                                <small class="text-muted" style="font-size: 11px;">Registrasi pasien baru</small>
+                            </div>
+                        </div>
+                        <div class="col-xl col-md-4 col-6">
                             <div class="feature-card p-3 rounded-3 text-center h-100">
                                 <i class="bi bi-heart-pulse fs-4 text-primary"></i>
                                 <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Triage</h6>
                                 <small class="text-muted" style="font-size: 11px;">Prioritas kegawatan</small>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-md-6 col-6">
+                        <div class="col-xl col-md-4 col-6">
                             <div class="feature-card p-3 rounded-3 text-center h-100">
                                 <i class="bi bi-file-earmark-medical-fill fs-4 text-primary"></i>
                                 <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Rekam Medis</h6>
                                 <small class="text-muted" style="font-size: 11px;">Riwayat tersimpan aman</small>
                             </div>
                         </div>
-                        <div class="col-xl-3 col-md-6 col-6">
+                        <div class="col-xl col-md-4 col-6">
                             <div class="feature-card p-3 rounded-3 text-center h-100">
                                 <i class="bi bi-display fs-4 text-primary"></i>
                                 <h6 class="mt-2 mb-1 fw-bold" style="font-size: 13px;">Monitoring</h6>

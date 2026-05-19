@@ -72,12 +72,12 @@ body{
     z-index:2;
 }
 
-/* ICON CIRCLE  */
+/* ICON CIRCLE (DITURUNIN DIKIT) */
 .icon-circle{
     position:absolute;
     width:260px;
     height:260px;
-    top:0px; 
+    top:0px; /* 🔥 INI YANG NURUNIN */
 }
 
 .small-icon{
@@ -151,7 +151,7 @@ label{
 
 .password-wrapper .form-control {
     margin-bottom: 0;
-    padding-right: 35px; 
+    padding-right: 35px; /* space for icon */
 }
 
 .toggle-password {
@@ -279,20 +279,14 @@ label{
                             </span>
                         </div>
 
-                        <label>Role</label>
-                        <select name="role" class="form-control" required>
-                            <option value="">Pilih Role...</option>
-                            <option value="admin">Admin</option>
-                            <option value="dokter">Dokter</option>
-                            <option value="perawat">Perawat</option>
-                            <option value="pmik">PMIK</option>
-                        </select>
+
 
                         <div class="extra">
                             <label>
                                 <input type="checkbox" name="remember">
                                 Remember Me
                             </label>
+
 
                         </div>
 

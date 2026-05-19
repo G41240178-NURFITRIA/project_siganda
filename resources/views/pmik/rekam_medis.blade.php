@@ -35,9 +35,13 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .btn-secondary:hover { background:#6B7280; }
 .action-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
 .action-cell { display: flex; gap: 8px; }
+.pagination { display: flex; list-style: none; padding: 0; gap: 5px; margin-top: 15px; justify-content: center; }
+.pagination li a, .pagination li span { padding: 8px 12px; background: #fff; border: 1px solid #E5E7EB; border-radius: 6px; color: #374151; font-size: 13px; text-decoration: none; }
+.pagination li.active span { background: #6366F1; color: white; border-color: #6366F1; }
+.pagination li a:hover { background: #F3F4F6; }
 </style>
 
-<div class="dashboard" x-data="{ viewMode: 'list', selectedRm: null, isEdit: false }">
+<div class="dashboard" x-data="{ viewMode: 'list', selectedRm: null }">
     @include('layouts.sidebar-pmik')
 
     <div class="main">
@@ -77,7 +81,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                             <th>NAMA PASIEN</th>
                             <th>KELUHAN UTAMA</th>
                             <th>DIAGNOSA</th>
-                            <th>STATUS VALIDASI</th>
                             <th>AKSI</th>
                         </tr>
                     </thead>
@@ -88,38 +91,22 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                             <td @click="viewMode = 'detail'; selectedRm = {{ $rm->toJson() }};">{{ $rm->nama_pasien }}</td>
                             <td @click="viewMode = 'detail'; selectedRm = {{ $rm->toJson() }};">{{ Str::limit($rm->keluhan_utama, 30) }}</td>
                             <td @click="viewMode = 'detail'; selectedRm = {{ $rm->toJson() }};">{{ Str::limit($rm->diagnosa_dokter, 30) }}</td>
-                            <td @click="viewMode = 'detail'; selectedRm = {{ $rm->toJson() }};">
-                                <span class="status-badge status-{{ $rm->status_validasi }}">
-                                    {{ ucfirst($rm->status_validasi) }}
-                                </span>
-                            </td>
                             <td class="action-cell">
-                                <button @click="viewMode = 'form'; isEdit = true; selectedRm = {{ $rm->toJson() }};" class="btn-warning">Edit</button>
-                                
-                                <form action="{{ route('rekam.medis.destroy', $rm->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?');" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-danger">Hapus</button>
-                                </form>
-                                
-                                @if($rm->status_validasi == 'menunggu')
-                                <form action="{{ route('rekam.medis.validasi', $rm->id) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="status_validasi" value="valid">
-                                    <button type="submit" class="btn-success">Validasi</button>
-                                </form>
-                                @endif
+                                <button @click="viewMode = 'detail'; selectedRm = {{ $rm->toJson() }};" class="btn-info" style="background:#E0E7FF; color:#4F46E5; border:none;">👁️ Lihat</button>
                             </td>
                         </tr>
                         @endforeach
                         @if($data->isEmpty())
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 20px; color: #6B7280;">Belum ada data rekam medis.</td>
+                            <td colspan="5" style="text-align: center; padding: 20px; color: #6B7280;">Belum ada data rekam medis.</td>
                         </tr>
                         @endif
                     </tbody>
                 </table>
+            </div>
+            
+            <div style="margin-top: 15px; display: flex; justify-content: center;">
+                {{ $data->appends(request()->query())->links('pagination::bootstrap-4') }}
             </div>
         </div>
 
@@ -172,79 +159,9 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                     <label>Tindakan Dokter</label>
                     <div class="form-control" x-text="selectedRm?.tindakan_dokter"></div>
                 </div>
-                
-                <h3 style="margin-top: 20px;">Status Validasi</h3>
-                <div class="form-group">
-                    <span :class="'status-badge status-' + selectedRm?.status_validasi" x-text="selectedRm?.status_validasi ? selectedRm.status_validasi.toUpperCase() : ''"></span>
-                </div>
             </div>
         </div>
 
-        {{-- FORM VIEW (CREATE & EDIT) --}}
-        <div x-show="viewMode === 'form'" style="display: none;">
-            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111827;" x-text="isEdit ? 'Edit Rekam Medis' : 'Input Rekam Medis'"></h2>
-            
-            <form :action="isEdit ? '{{ url('rekam-medis') }}/' + selectedRm?.id : '{{ route('rekam.medis.store') }}'" method="POST" class="form-section">
-                @csrf
-                <template x-if="isEdit">
-                    @method('PUT')
-                </template>
-                <template x-if="isEdit">
-                    <input type="hidden" name="id" :value="selectedRm?.id">
-                </template>
-                
-                <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Identitas Pasien</h3>
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>No. Rekam Medis</label>
-                        <input type="text" name="no_rm" class="form-control" required placeholder="Contoh: RM-001" :value="selectedRm?.no_rm">
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Pasien</label>
-                        <input type="text" name="nama_pasien" class="form-control" required placeholder="Nama lengkap pasien" :value="selectedRm?.nama_pasien">
-                    </div>
-                    <div class="form-group">
-                        <label>Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" class="form-control" required :value="selectedRm?.tanggal_lahir">
-                    </div>
-                    <div class="form-group">
-                        <label>Jenis Kelamin</label>
-                        <select name="jenis_kelamin" class="form-control" required :value="selectedRm?.jenis_kelamin">
-                            <option value="">Pilih Jenis Kelamin</option>
-                            <option value="L" :selected="selectedRm?.jenis_kelamin == 'L'">Laki-laki</option>
-                            <option value="P" :selected="selectedRm?.jenis_kelamin == 'P'">Perempuan</option>
-                        </select>
-                    </div>
-                </div>
-
-                <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg> Anamnesa</h3>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Keluhan Utama</label>
-                    <textarea name="keluhan_utama" class="form-control" placeholder="Jelaskan keluhan utama pasien..." x-text="selectedRm?.keluhan_utama"></textarea>
-                </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Riwayat Penyakit</label>
-                    <textarea name="riwayat_penyakit" class="form-control" placeholder="Riwayat penyakit sebelumnya..." x-text="selectedRm?.riwayat_penyakit"></textarea>
-                </div>
-
-                <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg> Diagnosa</h3>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Diagnosa Dokter</label>
-                    <input type="text" name="diagnosa_dokter" class="form-control" placeholder="Diagnosa utama pasien" :value="selectedRm?.diagnosa_dokter">
-                </div>
-
-                <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M12 20h9"></path></svg> Tindakan</h3>
-                <div class="form-group">
-                    <label>Tindakan Dokter</label>
-                    <input type="text" name="tindakan_dokter" class="form-control" placeholder="Tindakan yang diberikan" :value="selectedRm?.tindakan_dokter">
-                </div>
-
-                <div class="action-buttons">
-                    <button type="button" @click="viewMode = 'list'" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary" x-text="isEdit ? 'Update Rekam Medis' : 'Simpan Rekam Medis'"></button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
 </x-app-layout>
