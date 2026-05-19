@@ -28,9 +28,9 @@ body {
 .card {
     background: #fff;
     border-radius: 16px;
-    padding: 24px;
+    padding: 16px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     width: 100%;
 }
 
@@ -38,25 +38,25 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
     color: #1F2937;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #E5E7EB;
 }
 
 /* FORM STYLES */
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .form-label {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: #4B5563;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .form-control {
@@ -85,7 +85,6 @@ body {
 }
 
 textarea.form-control {
-    min-height: 100px;
     resize: vertical;
 }
 
@@ -100,7 +99,7 @@ textarea.form-control {
     cursor: pointer;
     transition: background 0.2s;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .btn-submit:hover {
@@ -108,10 +107,10 @@ textarea.form-control {
 }
 
 .alert {
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-radius: 10px;
-    margin-bottom: 20px;
-    font-size: 14px;
+    margin-bottom: 12px;
+    font-size: 13px;
     font-weight: 600;
 }
 
@@ -124,7 +123,7 @@ textarea.form-control {
 .row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 12px;
 }
 
 @media(max-width: 600px) {
@@ -145,7 +144,7 @@ textarea.form-control {
 
         <div class="card">
             <div class="card-header">
-                🏥 Form Registrasi Pasien / Rekam Medis Baru
+                🏥 Form Registrasi Pasien
             </div>
 
             @if(session('success'))
@@ -159,7 +158,7 @@ textarea.form-control {
 
                 <div class="row">
                     <div class="form-group">
-                        <label class="form-label">No Rekam Medis (Otomatis & Paten)</label>
+                        <label class="form-label">No Rekam Medis</label>
                         <input type="text" name="no_rm" class="form-control" value="{{ $nextRm }}" readonly required>
                     </div>
 
@@ -188,17 +187,17 @@ textarea.form-control {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">No. Telepon (Opsional)</label>
+                        <label class="form-label">No. Telepon</label>
                         <input type="text" name="no_telepon" class="form-control" placeholder="Contoh: 08123456789">
                     </div>
 
                     <div class="form-group" style="grid-column: span 2;">
                         <label class="form-label">Alamat Lengkap</label>
-                        <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap pasien..." style="min-height: 60px;"></textarea>
+                        <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap pasien..." style="min-height: 40px;"></textarea>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Simpan Data Pendaftaran</button>
+                <button type="submit" class="btn-submit">Simpan Data</button>
             </form>
         </div>
     </div>
