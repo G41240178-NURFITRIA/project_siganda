@@ -160,7 +160,7 @@ Route::middleware([
     Route::get('/registrasi', function () {
         $user = Auth::user();
         
-        $lastRm = \App\Models\RekamMedis::orderBy('id', 'desc')->first();
+        $lastRm = \App\Models\RekamMedis::where('no_rm', 'like', '%-%')->orderBy('id', 'desc')->first();
         
         if ($lastRm) {
             $cleanNumber = str_replace('-', '', $lastRm->no_rm);
