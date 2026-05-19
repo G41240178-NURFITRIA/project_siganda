@@ -141,6 +141,8 @@ Route::middleware([
         return view('perawat.triage_riwayat', compact('triages'));
     })->middleware('role:perawat,admin,dokter')->name('triage.riwayat');
 
+
+
     Route::post('/triage/{id}/selesai', function (Illuminate\Http\Request $request, $id) {
         $triage = \App\Models\Triage::findOrFail($id);
         $triage->status_observasi = 'selesai';
@@ -155,21 +157,27 @@ Route::middleware([
     })->middleware('role:perawat,admin,dokter')->name('triage.cetak');
 
 
-        Route::get('/registrasi', function () {
+    Route::get('/registrasi', function () {
         $user = Auth::user();
         
-        // Buat nomor Rekam Medis (RM) otomatis 6 digit
         $lastRm = \App\Models\RekamMedis::orderBy('id', 'desc')->first();
-        $nextRm = $lastRm && is_numeric($lastRm->no_rm) 
-            ? str_pad(((int)$lastRm->no_rm) + 1, 6, '0', STR_PAD_LEFT) 
-            : '000001';
+        
+        if ($lastRm) {
+            $cleanNumber = str_replace('-', '', $lastRm->no_rm);
+            $nextNum = is_numeric($cleanNumber) ? (int)$cleanNumber + 1 : 1;
+        } else {
+            $nextNum = 1;
+        }
+
+        $padded = str_pad($nextNum, 6, '0', STR_PAD_LEFT);
+        $nextRm = substr($padded, 0, 2) . '-' . substr($padded, 2, 2) . '-' . substr($padded, 4, 2);
 
         if ($user->isAdmin()) return view('admin.registrasi', compact('nextRm'));
         if ($user->isPmik()) return view('pmik.registrasi', compact('nextRm'));
-        
         abort(403);
     })->middleware('role:pmik,admin')
       ->name('registrasi');
+
 
     Route::resource('rekam-medis', App\Http\Controllers\RekamMedisController::class)
         ->middleware('role:pmik,dokter,admin')
