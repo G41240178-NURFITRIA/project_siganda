@@ -155,14 +155,21 @@ Route::middleware([
     })->middleware('role:perawat,admin,dokter')->name('triage.cetak');
 
 
-    Route::get('/registrasi', function () {
+        Route::get('/registrasi', function () {
         $user = Auth::user();
-        if ($user->isAdmin()) return view('admin.registrasi');
-        if ($user->isPmik()) return view('pmik.registrasi');
+        
+        // Buat nomor Rekam Medis (RM) otomatis 6 digit
+        $lastRm = \App\Models\RekamMedis::orderBy('id', 'desc')->first();
+        $nextRm = $lastRm && is_numeric($lastRm->no_rm) 
+            ? str_pad(((int)$lastRm->no_rm) + 1, 6, '0', STR_PAD_LEFT) 
+            : '000001';
+
+        if ($user->isAdmin()) return view('admin.registrasi', compact('nextRm'));
+        if ($user->isPmik()) return view('pmik.registrasi', compact('nextRm'));
+        
         abort(403);
     })->middleware('role:pmik,admin')
       ->name('registrasi');
-
 
     Route::resource('rekam-medis', App\Http\Controllers\RekamMedisController::class)
         ->middleware('role:pmik,dokter,admin')

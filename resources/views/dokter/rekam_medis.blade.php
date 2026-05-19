@@ -31,7 +31,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .action-buttons { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
 </style>
 
-<div class="dashboard" x-data="{ showForm: false, showDetail: false, detailData: {} }">
+<div class="dashboard" x-data="{ showForm: false, showDetail: false, detailData: {}, editData: {} }">
     @include('layouts.sidebar-dokter')
 
     <div class="main">
@@ -61,9 +61,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                         <input type="text" placeholder="Cari pasien...">
                     </div>
-                    <button @click="showForm = true" class="btn-primary">
-                        + Tambah
-                    </button>
+                    </div>
+                    <!-- Tombol Tambah dihapus karena identitas diisi otomatis dari pendaftaran PMIK -->
                 </div>
             </div>
 
@@ -92,7 +91,8 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                                 </span>
                             </td>
                             <td>
-                                <button @click="detailData = {{ json_encode($rm) }}; showDetail = true" style="background:#E0E7FF; color:#4F46E5; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px;">👁️ Lihat</button>
+                                <button @click="editData = {{ json_encode($rm) }}; showForm = true" style="background:#EEF2FF; color:#4F46E5; border:1px solid #4F46E5; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; margin-bottom: 5px; display: block; width: 100%;">🩺 Periksa</button>
+                                <button @click="detailData = {{ json_encode($rm) }}; showDetail = true" style="background:#E0E7FF; color:#4F46E5; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; display: block; width: 100%;">👁️ Lihat</button>
                             </td>
                         </tr>
                         @endforeach
@@ -106,62 +106,70 @@ textarea.form-control { resize: vertical; min-height: 80px; }
             </div>
         </div>
 
-        {{-- FORM VIEW --}}
+        {{-- FORM VIEW (Pemeriksaan) --}}
         <div x-show="showForm" style="display: none;">
-            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111827;">Input Rekam Medis</h2>
+            <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #111827;">Pemeriksaan & Pengisian Rekam Medis</h2>
             
-            <form action="{{ route('rekam.medis.store') }}" method="POST" class="form-section">
+            <form :action="'{{ url('rekam-medis') }}/' + editData.id" method="POST" class="form-section">
                 @csrf
+                @method('PUT')
                 
-                <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Identitas Pasien</h3>
+                <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Identitas Pasien (Otomatis dari Pendaftaran)</h3>
                 <div class="grid-2">
                     <div class="form-group">
                         <label>No. Rekam Medis</label>
-                        <input type="text" name="no_rm" class="form-control" required placeholder="Contoh: RM-001">
+                        <input type="text" name="no_rm" :value="editData.no_rm" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
                     </div>
                     <div class="form-group">
                         <label>Nama Pasien</label>
-                        <input type="text" name="nama_pasien" class="form-control" required placeholder="Nama lengkap pasien">
+                        <input type="text" name="nama_pasien" :value="editData.nama_pasien" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
                     </div>
                     <div class="form-group">
                         <label>Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" class="form-control" required>
+                        <input type="date" name="tanggal_lahir" :value="editData.tanggal_lahir" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
                     </div>
                     <div class="form-group">
                         <label>Jenis Kelamin</label>
-                        <select name="jenis_kelamin" class="form-control" required>
-                            <option value="">Pilih Jenis Kelamin</option>
-                            <option value="L">Laki-laki</option>
-                            <option value="P">Perempuan</option>
-                        </select>
+                        <input type="hidden" name="jenis_kelamin" :value="editData.jenis_kelamin">
+                        <input type="text" :value="editData.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group">
+                        <label>No. Telepon</label>
+                        <input type="hidden" name="no_telepon" :value="editData.no_telepon">
+                        <input type="text" :value="editData.no_telepon" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Alamat</label>
+                        <input type="hidden" name="alamat" :value="editData.alamat">
+                        <textarea class="form-control" x-text="editData.alamat" readonly style="background:#E5E7EB; cursor:not-allowed; min-height:60px;"></textarea>
                     </div>
                 </div>
 
                 <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Anamnesa</h3>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Keluhan Utama</label>
-                    <textarea name="keluhan_utama" class="form-control" placeholder="Jelaskan keluhan utama pasien..."></textarea>
+                    <textarea name="keluhan_utama" class="form-control" placeholder="Jelaskan keluhan utama pasien..." x-text="editData.keluhan_utama"></textarea>
                 </div>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Riwayat Penyakit</label>
-                    <textarea name="riwayat_penyakit" class="form-control" placeholder="Riwayat penyakit sebelumnya..."></textarea>
+                    <textarea name="riwayat_penyakit" class="form-control" placeholder="Riwayat penyakit sebelumnya..." x-text="editData.riwayat_penyakit"></textarea>
                 </div>
 
                 <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Diagnosa</h3>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Diagnosa Dokter</label>
-                    <input type="text" name="diagnosa_dokter" class="form-control" placeholder="Diagnosa utama pasien">
+                    <input type="text" name="diagnosa_dokter" :value="editData.diagnosa_dokter" class="form-control" placeholder="Diagnosa utama pasien">
                 </div>
 
                 <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Tindakan</h3>
                 <div class="form-group">
                     <label>Tindakan Dokter</label>
-                    <input type="text" name="tindakan_dokter" class="form-control" placeholder="Tindakan yang diberikan">
+                    <input type="text" name="tindakan_dokter" :value="editData.tindakan_dokter" class="form-control" placeholder="Tindakan yang diberikan">
                 </div>
 
                 <div class="action-buttons">
                     <button type="button" @click="showForm = false" class="btn-secondary">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan Rekam Medis</button>
+                    <button type="submit" class="btn-primary">Simpan Pemeriksaan</button>
                 </div>
             </form>
         </div>
@@ -191,6 +199,14 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <div class="form-group">
                             <label>Jenis Kelamin</label>
                             <input type="text" :value="detailData.jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan'" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>No. Telepon</label>
+                            <input type="text" :value="detailData.no_telepon" class="form-control" readonly>
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>Alamat</label>
+                            <textarea class="form-control" readonly x-text="detailData.alamat" style="min-height:60px;"></textarea>
                         </div>
                     </div>
 
