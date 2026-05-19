@@ -121,6 +121,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <input type="text" name="no_rm" :value="editData.no_rm" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
                     </div>
                     <div class="form-group">
+                        <label>NIK</label>
+                        <input type="text" name="nik" :value="editData.nik" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
+                    </div>
+                    <div class="form-group">
                         <label>Nama Pasien</label>
                         <input type="text" name="nama_pasien" :value="editData.nama_pasien" class="form-control" readonly style="background:#E5E7EB; cursor:not-allowed;">
                     </div>
@@ -187,6 +191,10 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <div class="form-group">
                             <label>No. Rekam Medis</label>
                             <input type="text" :value="detailData.no_rm" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>NIK</label>
+                            <input type="text" :value="detailData.nik" class="form-control" readonly>
                         </div>
                         <div class="form-group">
                             <label>Nama Pasien</label>

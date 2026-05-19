@@ -31,8 +31,7 @@ body {
     padding: 24px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     margin-bottom: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
 }
 
 .card-header {
@@ -146,7 +145,7 @@ textarea.form-control {
 
         <div class="card">
             <div class="card-header">
-                🏥 Form Registrasi Pasien 
+                🏥 Form Registrasi Pasien / Rekam Medis Baru
             </div>
 
             @if(session('success'))
@@ -160,8 +159,13 @@ textarea.form-control {
 
                 <div class="row">
                     <div class="form-group">
-                        <label class="form-label">No Rekam Medis</label>
+                        <label class="form-label">No Rekam Medis (Otomatis & Paten)</label>
                         <input type="text" name="no_rm" class="form-control" value="{{ $nextRm }}" readonly required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
+                        <input type="text" name="nik" class="form-control" placeholder="Masukkan 16 digit NIK" required maxlength="16">
                     </div>
 
                     <div class="form-group">
@@ -188,9 +192,9 @@ textarea.form-control {
                         <input type="text" name="no_telepon" class="form-control" placeholder="Contoh: 08123456789">
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" style="grid-column: span 2;">
                         <label class="form-label">Alamat Lengkap</label>
-                        <input type="text" name="alamat" class="form-control" placeholder="Masukkan alamat lengkap pasien...">
+                        <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap pasien..." style="min-height: 60px;"></textarea>
                     </div>
                 </div>
 

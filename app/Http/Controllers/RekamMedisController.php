@@ -14,10 +14,11 @@ class RekamMedisController extends Controller
         return view("{$role}.rekam_medis", compact('data'));
     }
 
-        public function store(Request $request)
+            public function store(Request $request)
     {
         $request->validate([
             'no_rm' => 'required|unique:rekam_medis',
+            'nik' => 'required|string|size:16',
             'nama_pasien' => 'required',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -26,16 +27,16 @@ class RekamMedisController extends Controller
         ]);
 
         RekamMedis::create($request->all());
-
         return back()->with('success', 'Data rekam medis berhasil ditambahkan!');
     }
 
-    public function update(Request $request, $id) // Gunakan $id
+    public function update(Request $request, $id)
     {
         $rm = RekamMedis::findOrFail($id);
         
         $request->validate([
             'no_rm' => 'required|unique:rekam_medis,no_rm,' . $rm->id,
+            'nik' => 'required|string|size:16',
             'nama_pasien' => 'required',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
@@ -44,7 +45,6 @@ class RekamMedisController extends Controller
         ]);
 
         $rm->update($request->all());
-
         return back()->with('success', 'Data rekam medis berhasil diperbarui!');
     }
 }

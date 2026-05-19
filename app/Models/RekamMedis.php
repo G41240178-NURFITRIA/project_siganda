@@ -9,13 +9,14 @@ class RekamMedis extends Model
 {
     use HasFactory;
 
-       protected $fillable = [
+           protected $fillable = [
         'no_rm',
+        'nik',
         'nama_pasien',
         'tanggal_lahir',
         'jenis_kelamin',
-        'alamat',            // Tambahkan ini
-        'no_telepon',        // Tambahkan ini
+        'alamat',
+        'no_telepon',
         'keluhan_utama',
         'riwayat_penyakit',
         'status_validasi',
