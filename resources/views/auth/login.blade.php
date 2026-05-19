@@ -72,12 +72,12 @@ body{
     z-index:2;
 }
 
-/* ICON CIRCLE (DITURUNIN DIKIT) */
+/* ICON CIRCLE  */
 .icon-circle{
     position:absolute;
     width:260px;
     height:260px;
-    top:0px; /* 🔥 INI YANG NURUNIN */
+    top:0px; 
 }
 
 .small-icon{
@@ -151,7 +151,7 @@ label{
 
 .password-wrapper .form-control {
     margin-bottom: 0;
-    padding-right: 35px; /* space for icon */
+    padding-right: 35px; 
 }
 
 .toggle-password {
@@ -294,9 +294,6 @@ label{
                                 Remember Me
                             </label>
 
-                            <a href="{{ route('password.request') }}">
-                                Forgot your password?
-                            </a>
                         </div>
 
                         <button class="btn-login">LOGIN</button>
