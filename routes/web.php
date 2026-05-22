@@ -273,11 +273,32 @@ Route::middleware([
     })->middleware('role:pmik')->name('pmik.pelaporan.sensus.detail');
 
 
-    // Detail 10 Besar Morbiditas
-    Route::get('/pmik/pelaporan/morbiditas', function (Illuminate\Http\Request $request) {
+    // Arsip Morbiditas Bulanan
+    Route::get('/pmik/pelaporan/morbiditas', function () {
+        $allData = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')
+            ->selectRaw('YEAR(created_at) as tahun, MONTH(created_at) as bulan, COUNT(*) as total')
+            ->groupBy('tahun', 'bulan')
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
+
+        $arsip = [];
+        foreach ($allData as $item) {
+            $arsip[$item->tahun][] = [
+                'bulan' => $item->bulan,
+                'bulan_nama' => \Carbon\Carbon::create()->month($item->bulan)->translatedFormat('F'),
+                'total' => $item->total,
+            ];
+        }
+
+        return view('pmik.pelaporan_morbiditas', compact('arsip'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.morbiditas');
+
+    // Detail Morbiditas per Bulan
+    Route::get('/pmik/pelaporan/morbiditas/detail', function (Illuminate\Http\Request $request) {
         $month = $request->query('month', date('m'));
         $year = $request->query('year', date('Y'));
-        
+
         $data = \App\Models\RekamMedis::whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->whereNotNull('diagnosa_dokter')
@@ -286,23 +307,49 @@ Route::middleware([
             ->orderByDesc('total')
             ->take(10)
             ->get();
-            
-        return view('pmik.pelaporan_morbiditas', compact('data', 'month', 'year'));
-    })->middleware('role:pmik')->name('pmik.pelaporan.morbiditas');
 
-    // Detail 10 Besar Mortalitas
-    Route::get('/pmik/pelaporan/mortalitas', function (Illuminate\Http\Request $request) {
+        $bulanNama = \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F');
+
+        return view('pmik.pelaporan_morbiditas_detail', compact('data', 'month', 'year', 'bulanNama'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.morbiditas.detail');
+
+    // Arsip Mortalitas Bulanan
+    Route::get('/pmik/pelaporan/mortalitas', function () {
+        $allData = \App\Models\Triage::where('tindak_lanjut', 'Meninggal')
+            ->selectRaw('YEAR(updated_at) as tahun, MONTH(updated_at) as bulan, COUNT(*) as total')
+            ->groupBy('tahun', 'bulan')
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
+
+        $arsip = [];
+        foreach ($allData as $item) {
+            $arsip[$item->tahun][] = [
+                'bulan' => $item->bulan,
+                'bulan_nama' => \Carbon\Carbon::create()->month($item->bulan)->translatedFormat('F'),
+                'total' => $item->total,
+            ];
+        }
+
+        return view('pmik.pelaporan_mortalitas', compact('arsip'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.mortalitas');
+
+    // Detail Mortalitas per Bulan
+    Route::get('/pmik/pelaporan/mortalitas/detail', function (Illuminate\Http\Request $request) {
         $month = $request->query('month', date('m'));
         $year = $request->query('year', date('Y'));
-        
+
         $data = \App\Models\Triage::whereMonth('updated_at', $month)
             ->whereYear('updated_at', $year)
             ->where('tindak_lanjut', 'Meninggal')
             ->latest()
             ->get();
-            
-        return view('pmik.pelaporan_mortalitas', compact('data', 'month', 'year'));
-    })->middleware('role:pmik')->name('pmik.pelaporan.mortalitas');
+
+        $bulanNama = \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F');
+
+        return view('pmik.pelaporan_mortalitas_detail', compact('data', 'month', 'year', 'bulanNama'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.mortalitas.detail');
+
 
 
 
