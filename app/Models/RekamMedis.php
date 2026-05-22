@@ -18,9 +18,6 @@ class RekamMedis extends Model
         'alamat',
         'no_telepon',
         'keluhan_utama',
-        'riwayat_penyakit',
-        'status_validasi',
-        'diagnosa_dokter',
         'tindakan_dokter'
     ];
 }

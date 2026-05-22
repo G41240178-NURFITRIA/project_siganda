@@ -69,7 +69,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                             <th>NO. RM</th>
                             <th>NAMA PASIEN</th>
                             <th>KELUHAN UTAMA</th>
-                            <th>DIAGNOSA</th>
                             <th>AKSI</th>
                         </tr>
                     </thead>
@@ -79,16 +78,15 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                             <td style="font-weight: 600;">{{ $rm->no_rm }}</td>
                             <td>{{ $rm->nama_pasien }}</td>
                             <td>{{ Str::limit($rm->keluhan_utama, 30) }}</td>
-                            <td>{{ Str::limit($rm->diagnosa_dokter, 30) }}</td>
                             <td>
-                                <button @click="editData = {{ json_encode($rm) }}; showForm = true" style="background:#EEF2FF; color:#4F46E5; border:1px solid #4F46E5; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; margin-bottom: 5px; display: block; width: 100%;">🩺 Periksa</button>
+                                <button @click="editData = {{ json_encode($rm) }}; showForm = true" style="background:#EEF2FF; color:#4F46E5; border:1px solid #4F46E5; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; margin-bottom: 5px; display: block; width: 100%;">✏️ Edit</button>
                                 <button @click="detailData = {{ json_encode($rm) }}; showDetail = true" style="background:#E0E7FF; color:#4F46E5; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; display: block; width: 100%;">👁️ Lihat</button>
                             </td>
                         </tr>
                         @endforeach
                         @if($data->isEmpty())
                         <tr>
-                            <td colspan="5" style="text-align: center; padding: 20px; color: #6B7280;">Belum ada data rekam medis.</td>
+                            <td colspan="4" style="text-align: center; padding: 20px; color: #6B7280;">Belum ada data rekam medis.</td>
                         </tr>
                         @endif
                     </tbody>
@@ -147,81 +145,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <textarea name="riwayat_penyakit" class="form-control" placeholder="Riwayat penyakit sebelumnya..." x-text="editData.riwayat_penyakit" style="min-height:60px;"></textarea>
                     </div>
 
-                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Diagnosa</h3>
-                    <div class="form-group" style="margin-bottom: 15px; position: relative;" 
-                         x-data="{ 
-                            query: editData.diagnosa_dokter || '', 
-                            results: [], 
-                            showDropdown: false,
-                            search() {
-                                if(this.query.length < 3) {
-                                    this.results = [];
-                                    this.showDropdown = false;
-                                    return;
-                                }
-                                fetch(`https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=${this.query}&sf=code,name&df=code,name`)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        this.results = data[3] || [];
-                                        this.showDropdown = this.results.length > 0;
-                                    });
-                            },
-                            select(item) {
-                                this.query = item[0] + ' - ' + item[1];
-                                this.showDropdown = false;
-                            }
-                         }"
-                         x-init="$watch('editData', val => query = val.diagnosa_dokter || '')"
-                    >
-                        <label>Diagnosa Dokter (Auto-complete API ICD-10)</label>
-                        <input autocomplete="off" type="text" name="diagnosa_dokter" x-model="query" @input.debounce.500ms="search" @focus="search" @click.away="showDropdown = false" class="form-control" placeholder="Ketik nama penyakit (cth: gastritis) lalu pilih...">
-                        
-                        <ul x-show="showDropdown" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #D1D5DB; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 50; list-style: none; margin: 5px 0 0 0; padding: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: none;">
-                            <template x-for="(item, index) in results" :key="index">
-                                <li @click="select(item)" style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB; cursor: pointer; font-size: 13px; color: #374151;" onmouseover="this.style.backgroundColor='#F3F4F6'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <strong x-text="item[0]"></strong> - <span x-text="item[1]"></span>
-                                </li>
-                            </template>
-                        </ul>
-                    </div>
 
-                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Tindakan</h3>
-                    <div class="form-group" style="position: relative;"
-                         x-data="{ 
-                            queryTindakan: editData.tindakan_dokter || '', 
-                            resultsTindakan: [], 
-                            showDropdownTindakan: false,
-                            searchTindakan() {
-                                if(this.queryTindakan.length < 3) {
-                                    this.resultsTindakan = [];
-                                    this.showDropdownTindakan = false;
-                                    return;
-                                }
-                                fetch(`https://clinicaltables.nlm.nih.gov/api/hcpcs/v3/search?terms=${this.queryTindakan}&sf=code,name&df=code,name`)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        this.resultsTindakan = data[3] || [];
-                                        this.showDropdownTindakan = this.resultsTindakan.length > 0;
-                                    });
-                            },
-                            selectTindakan(item) {
-                                this.queryTindakan = item[0] + ' - ' + item[1];
-                                this.showDropdownTindakan = false;
-                            }
-                         }"
-                         x-init="$watch('editData', val => queryTindakan = val.tindakan_dokter || '')"
-                    >
-                        <label>Tindakan Dokter (Auto-complete API HCPCS / Prosedur)</label>
-                        <input autocomplete="off" type="text" name="tindakan_dokter" x-model="queryTindakan" @input.debounce.500ms="searchTindakan" @focus="searchTindakan" @click.away="showDropdownTindakan = false" class="form-control" placeholder="Ketik tindakan (cth: endoscopy) lalu pilih...">
-                        
-                        <ul x-show="showDropdownTindakan" style="position: absolute; bottom: 100%; left: 0; right: 0; background: white; border: 1px solid #D1D5DB; border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 50; list-style: none; margin: 0 0 5px 0; padding: 0; box-shadow: 0 -4px 6px rgba(0,0,0,0.1); display: none;">
-                            <template x-for="(item, index) in resultsTindakan" :key="index">
-                                <li @click="selectTindakan(item)" style="padding: 10px 15px; border-bottom: 1px solid #E5E7EB; cursor: pointer; font-size: 13px; color: #374151;" onmouseover="this.style.backgroundColor='#F3F4F6'" onmouseout="this.style.backgroundColor='transparent'">
-                                    <strong x-text="item[0]"></strong> - <span x-text="item[1]"></span>
-                                </li>
-                            </template>
-                        </ul>
-                    </div>
 
                     <div class="action-buttons">
                         <button type="button" @click="showForm = false" class="btn-secondary">Batal</button>
@@ -274,15 +198,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <textarea class="form-control" readonly x-text="detailData.riwayat_penyakit" style="min-height:60px;"></textarea>
                     </div>
 
-                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Diagnosa & Tindakan</h3>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label>Diagnosa Dokter</label>
-                        <input type="text" :value="detailData.diagnosa_dokter" class="form-control" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Tindakan Dokter</label>
-                        <input type="text" :value="detailData.tindakan_dokter" class="form-control" readonly>
-                    </div>
+
                 </div>
             </div>
         </div>
