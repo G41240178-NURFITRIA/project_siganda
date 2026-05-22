@@ -111,19 +111,17 @@ tr:hover { background: #f8fafc; }
                             @endif
                         </td>
                         <td class="duration-cell" style="font-size:16px; font-weight:800; font-family:monospace; color:#15803d;">00:00:00</td>
-                        <td>
-                            <div style="display: flex; gap: 5px;">
-                                <form action="{{ route('triage.selesai', $t->id) }}" method="POST" style="margin: 0; display:flex; gap:5px;">
-                                    @csrf
-                                    <button type="submit" name="tindak_lanjut" value="Pulang" onclick="return confirm('Selesaikan observasi: Pasien Pulang?');" style="padding:6px 10px; background:#f0fdf4; color:#16a34a; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(22,163,74,0.1);">🏠 Pulang</button>
-                                    
-                                    <button type="submit" name="tindak_lanjut" value="Rawat Inap" onclick="return confirm('Selesaikan observasi: Pasien Masuk Rawat Inap?');" style="padding:6px 10px; background:#eff6ff; color:#2563eb; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(37,99,235,0.1);">🏥 Rawat Inap</button>
-                                    
-                                    <button type="submit" name="tindak_lanjut" value="Rujuk" onclick="return confirm('Selesaikan observasi: Pasien Dirujuk ke RS Lain?');" style="padding:6px 10px; background:#fdf4ff; color:#c026d3; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(192,38,211,0.1);">🚑 Rujuk</button>
-
-                                    <button type="submit" name="tindak_lanjut" value="Meninggal" onclick="return confirm('Selesaikan observasi: Pasien Meninggal?');" style="padding:6px 10px; background:#fef2f2; color:#dc2626; border:none; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow: 0 2px 4px rgba(220,38,38,0.1);">💀 Meninggal</button>
-                                </form>
-                            </div>
+                        <td style="font-weight:700; color:#475569;">
+                            @if($t->status_observasi === 'selesai')
+                                @if($t->tindak_lanjut == 'Pulang') <span style="color:#16a34a;">🏠 Pulang</span>
+                                @elseif($t->tindak_lanjut == 'Rawat Inap') <span style="color:#2563eb;">🏥 Rawat Inap</span>
+                                @elseif($t->tindak_lanjut == 'Rujuk') <span style="color:#c026d3;">🚑 Rujuk</span>
+                                @elseif($t->tindak_lanjut == 'Meninggal') <span style="color:#dc2626;">💀 Meninggal</span>
+                                @else <span style="color:#475569;">{{ $t->tindak_lanjut ?? 'Selesai' }}</span>
+                                @endif
+                            @else
+                                <span style="color:#64748b;">Menunggu pemeriksaan dokter</span>
+                            @endif
                         </td>
                     </tr>
                     @empty
