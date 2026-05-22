@@ -41,7 +41,7 @@
 
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">🏠 Dashboard</a>
 
-        <a href="{{ route('registrasi') }}" class="{{ request()->routeIs('registrasi') ? 'active' : '' }}">📝 Pendaftaran</a>
+        <a href="{{ route('registrasi') }}" class="{{ request()->routeIs('registrasi') ? 'active' : '' }}">📝 Pendaftaran </a>
 
         <div class="menu-dropdown {{ request()->routeIs('rekam.medis.*') || request()->routeIs('pmik.pelaporan') ? 'open' : '' }}">
             <a href="{{ route('rekam.medis.index') }}" class="{{ request()->routeIs('rekam.medis.index') ? 'active' : '' }}">📋 Rekam Medis</a>
