@@ -188,33 +188,33 @@ Route::middleware([
         ->name('rekam.medis.validasi');
 
     Route::get('/pmik/pelaporan', function () {
-        $sensusHarian = \App\Models\RekamMedis::whereDate('created_at', today())->count();
-        $kemarin = \App\Models\RekamMedis::whereDate('created_at', today()->subDay())->count();
-        
-        // Menghindari pembagian dengan nol
-        $trendHarian = $kemarin > 0 ? round((($sensusHarian - $kemarin) / $kemarin) * 100) : ($sensusHarian > 0 ? 100 : 0);
-        $trendHarianText = $trendHarian >= 0 ? '▲ ' . $trendHarian . '% naik' : '▼ ' . abs($trendHarian) . '% turun';
-
-        $topDiseases = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')
-            ->select('diagnosa_dokter', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
-            ->groupBy('diagnosa_dokter')
-            ->orderByDesc('total')
-            ->take(10)
-            ->get();
-
-        $totalPenyakit = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')->count();
-
-        $morbiditasBulanan = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
+        // Sensus Bulanan (Semua Pasien)
+        $sensusBulanan = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
             ->whereYear('created_at', date('Y'))
             ->count();
 
-        $bulanLalu = \App\Models\RekamMedis::whereMonth('created_at', today()->subMonth()->format('m'))
+        $sensusBulanLalu = \App\Models\RekamMedis::whereMonth('created_at', today()->subMonth()->format('m'))
             ->whereYear('created_at', today()->subMonth()->format('Y'))
             ->count();
             
-        $trendBulanan = $bulanLalu > 0 ? round((($morbiditasBulanan - $bulanLalu) / $bulanLalu) * 100) : ($morbiditasBulanan > 0 ? 100 : 0);
-        $trendBulananText = $trendBulanan >= 0 ? '▲ ' . $trendBulanan . '% naik' : '▼ ' . abs($trendBulanan) . '% turun';
+        $trendSensus = $sensusBulanLalu > 0 ? round((($sensusBulanan - $sensusBulanLalu) / $sensusBulanLalu) * 100) : ($sensusBulanan > 0 ? 100 : 0);
+        $trendSensusText = $trendSensus >= 0 ? '▲ ' . $trendSensus . '% naik' : '▼ ' . abs($trendSensus) . '% turun';
 
+        // Morbiditas Bulanan (Yang ada diagnosa)
+        $morbiditasBulanan = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->whereNotNull('diagnosa_dokter')
+            ->count();
+
+        $morbiditasBulanLalu = \App\Models\RekamMedis::whereMonth('created_at', today()->subMonth()->format('m'))
+            ->whereYear('created_at', today()->subMonth()->format('Y'))
+            ->whereNotNull('diagnosa_dokter')
+            ->count();
+            
+        $trendMorbiditas = $morbiditasBulanLalu > 0 ? round((($morbiditasBulanan - $morbiditasBulanLalu) / $morbiditasBulanLalu) * 100) : ($morbiditasBulanan > 0 ? 100 : 0);
+        $trendMorbiditasText = $trendMorbiditas >= 0 ? '▲ ' . $trendMorbiditas . '% naik' : '▼ ' . abs($trendMorbiditas) . '% turun';
+
+        // Mortalitas Bulanan
         $mortalitasBulanan = \App\Models\Triage::whereMonth('updated_at', date('m'))
             ->whereYear('updated_at', date('Y'))
             ->where('tindak_lanjut', 'Meninggal')
@@ -229,12 +229,80 @@ Route::middleware([
         $trendKematianText = $trendKematian >= 0 ? '▲ ' . $trendKematian . '% naik' : '▼ ' . abs($trendKematian) . '% turun';
 
         return view('pmik.pelaporan', compact(
-            'sensusHarian', 'trendHarian', 'trendHarianText', 
-            'topDiseases', 'totalPenyakit',
-            'morbiditasBulanan', 'trendBulanan', 'trendBulananText',
+            'sensusBulanan', 'trendSensus', 'trendSensusText',
+            'morbiditasBulanan', 'trendMorbiditas', 'trendMorbiditasText',
             'mortalitasBulanan', 'trendKematian', 'trendKematianText'
         ));
     })->middleware('role:pmik')->name('pmik.pelaporan');
+
+    // Arsip Sensus Bulanan - Daftar folder per bulan
+    Route::get('/pmik/pelaporan/sensus', function () {
+        // Ambil semua data untuk arsip, kelompokkan per tahun-bulan
+        $allData = \App\Models\RekamMedis::selectRaw('YEAR(created_at) as tahun, MONTH(created_at) as bulan, COUNT(*) as total')
+            ->groupBy('tahun', 'bulan')
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
+
+        // Susun menjadi arsip: tahun -> [bulan1, bulan2, ...]
+        $arsip = [];
+        foreach ($allData as $item) {
+            $arsip[$item->tahun][] = [
+                'bulan' => $item->bulan,
+                'bulan_nama' => \Carbon\Carbon::create()->month($item->bulan)->translatedFormat('F'),
+                'total' => $item->total,
+            ];
+        }
+            
+        return view('pmik.pelaporan_sensus', compact('arsip'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.sensus');
+
+    // Detail Sensus per Bulan - Halaman terpisah
+    Route::get('/pmik/pelaporan/sensus/detail', function (Illuminate\Http\Request $request) {
+        $month = $request->query('month', date('m'));
+        $year = $request->query('year', date('Y'));
+
+        $data = \App\Models\RekamMedis::whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->latest()
+            ->get();
+
+        $bulanNama = \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F');
+            
+        return view('pmik.pelaporan_sensus_detail', compact('data', 'month', 'year', 'bulanNama'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.sensus.detail');
+
+
+    // Detail 10 Besar Morbiditas
+    Route::get('/pmik/pelaporan/morbiditas', function (Illuminate\Http\Request $request) {
+        $month = $request->query('month', date('m'));
+        $year = $request->query('year', date('Y'));
+        
+        $data = \App\Models\RekamMedis::whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->whereNotNull('diagnosa_dokter')
+            ->select('diagnosa_dokter', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('diagnosa_dokter')
+            ->orderByDesc('total')
+            ->take(10)
+            ->get();
+            
+        return view('pmik.pelaporan_morbiditas', compact('data', 'month', 'year'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.morbiditas');
+
+    // Detail 10 Besar Mortalitas
+    Route::get('/pmik/pelaporan/mortalitas', function (Illuminate\Http\Request $request) {
+        $month = $request->query('month', date('m'));
+        $year = $request->query('year', date('Y'));
+        
+        $data = \App\Models\Triage::whereMonth('updated_at', $month)
+            ->whereYear('updated_at', $year)
+            ->where('tindak_lanjut', 'Meninggal')
+            ->latest()
+            ->get();
+            
+        return view('pmik.pelaporan_mortalitas', compact('data', 'month', 'year'));
+    })->middleware('role:pmik')->name('pmik.pelaporan.mortalitas');
 
 
 
