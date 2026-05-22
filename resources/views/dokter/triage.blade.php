@@ -48,7 +48,8 @@ tr:hover td { background-color: #f8fafc; }
                         <th>KELUHAN UTAMA</th>
                         <th>TANDA VITAL</th>
                         <th>KATEGORI</th>
-                        <th style="text-align:center;">AKSI</th>
+                        <th>TINDAK LANJUT</th>
+                        <th style="text-align:center;">DETAIL</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,10 +76,29 @@ tr:hover td { background-color: #f8fafc; }
                                 <span style="background: #dcfce7; color: #10b981; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 12px;">Hijau</span>
                             @endif
                         </td>
+                        <td style="min-width:180px;">
+                            @if($t->status_observasi !== 'selesai')
+                                <form action="{{ route('triage.selesai', $t->id) }}" method="POST" style="margin:0; display:flex; justify-content:center;">
+                                    @csrf
+                                    <select name="tindak_lanjut" required style="min-width: 160px; width:100%; max-width:180px; padding: 10px 12px; border:1px solid #cbd5e1; border-radius:10px; font-size:13px; color:#0f172a; background: rgba(255,255,255,0.88); box-shadow: inset 0 1px 2px rgba(15,23,42,0.08);">
+                                        <option value="">Pilih tindak lanjut</option>
+                                        <option value="Pulang">🏠 Pulang</option>
+                                        <option value="Rawat Inap">🏥 Rawat Inap</option>
+                                        <option value="Rujuk">🚑 Rujuk</option>
+                                        <option value="Meninggal">💀 Meninggal</option>
+                                    </select>
+                                </form>
+                            @else
+                                @if($t->tindak_lanjut == 'Pulang') <span style="color:#16a34a;">🏠 Pulang</span>
+                                @elseif($t->tindak_lanjut == 'Rawat Inap') <span style="color:#2563eb;">🏥 Rawat Inap</span>
+                                @elseif($t->tindak_lanjut == 'Rujuk') <span style="color:#c026d3;">🚑 Rujuk</span>
+                                @elseif($t->tindak_lanjut == 'Meninggal') <span style="color:#dc2626;">💀 Meninggal</span>
+                                @else <span style="color:#475569;">{{ $t->tindak_lanjut ?? 'Selesai' }}</span>
+                                @endif
+                            @endif
+                        </td>
                         <td style="text-align:center;">
-                            <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-                                <a href="{{ route('triage.cetak', $t->id) }}" target="_blank" style="text-decoration:none; background:#3b82f6; color:white; padding:7px 12px; border-radius:8px; font-size:12px; font-weight:700;">👁️ Detail</a>
-                            </div>
+                            <a href="{{ route('triage.cetak', $t->id) }}" target="_blank" style="text-decoration:none; background:#3b82f6; color:white; padding:7px 12px; border-radius:8px; font-size:12px; font-weight:700;">👁️ Detail</a>
                         </td>
                     </tr>
                     @empty
