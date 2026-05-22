@@ -1,3 +1,4 @@
+*resources/views/pmik/pelaporan.blade.php*
 <x-app-layout>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
@@ -31,6 +32,25 @@ body { background:#EEF2F7; }
 
 /* MINI CHART PLACEHOLDERS */
 .mini-chart { position: absolute; bottom: 15px; right: 20px; width: 80px; height: 40px; }
+
+/* BUTTON LIHAT DETAIL */
+.btn-lihat-detail {
+    display: inline-block;
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+}
+.btn-lihat-detail:hover {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    box-shadow: 0 4px 14px rgba(59,130,246,0.45);
+    transform: translateY(-1px);
+}
 </style>
 
 <div class="dashboard">
@@ -44,22 +64,20 @@ body { background:#EEF2F7; }
 
         <div class="reports-container">
             
-            {{-- Sensus Harian --}}
+            {{-- Sensus Bulanan --}}
             <div class="report-card border-blue">
                 <div class="report-header">
                     <div class="report-title">
-                        <span style="color: #3B82F6;">📊</span> Sensus Harian
+                        <span style="color: #3B82F6;">📊</span> Sensus Bulanan
                     </div>
                 </div>
-                <div class="report-number">{{ $sensusHarian }}</div>
-                <div class="report-label">Pasien (Hari Ini)</div>
-                <div class="report-trend {{ $trendHarian < 0 ? 'down' : '' }}">
-                    {{ $trendHarianText }}
+                <div class="report-number">{{ $sensusBulanan }}</div>
+                <div class="report-label">Total Pasien Bulan Ini</div>
+                <div style="margin-top: 18px;">
+                    <a href="{{ route('pmik.pelaporan.sensus') }}" class="btn-lihat-detail">
+                        Lihat Detail &rarr;
+                    </a>
                 </div>
-                <!-- Simple SVG sparkline -->
-                <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
-                    <polyline fill="none" stroke="#60A5FA" stroke-width="2" points="0,30 20,20 40,35 60,10 80,25 100,5"/>
-                </svg>
             </div>
 
             {{-- Morbiditas Bulan Ini --}}
@@ -68,11 +86,12 @@ body { background:#EEF2F7; }
                     <div class="report-title">
                         <span style="color: #10B981;">🤍</span> 10 Besar Morbiditas
                     </div>
+                    <a href="{{ route('pmik.pelaporan.morbiditas') }}" class="report-link">Lihat Detail &rarr;</a>
                 </div>
                 <div class="report-number">{{ $morbiditasBulanan }}</div>
                 <div class="report-label">Kasus Bulan Ini</div>
-                <div class="report-trend {{ $trendBulanan < 0 ? 'down' : '' }}">
-                    {{ $trendBulananText }}
+                <div class="report-trend {{ $trendMorbiditas < 0 ? 'down' : '' }}">
+                    {{ $trendMorbiditasText }}
                 </div>
                 <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
                     <polyline fill="none" stroke="#34D399" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
@@ -85,6 +104,7 @@ body { background:#EEF2F7; }
                     <div class="report-title">
                         <span style="color: #EF4444;">💀</span> 10 Besar Mortalitas
                     </div>
+                    <a href="{{ route('pmik.pelaporan.mortalitas') }}" class="report-link">Lihat Detail &rarr;</a>
                 </div>
                 <div class="report-number">{{ $mortalitasBulanan }}</div>
                 <div class="report-label">Data Kematian Bulan Ini</div>
