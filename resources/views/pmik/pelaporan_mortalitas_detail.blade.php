@@ -1,4 +1,3 @@
-*resources/views/pmik/pelaporan_mortalitas_detail.blade.php*
 <x-app-layout>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }

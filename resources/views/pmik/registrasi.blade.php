@@ -144,7 +144,7 @@ textarea.form-control {
 
         <div class="card">
             <div class="card-header">
-                🏥 Form Registrasi Pasien
+                🏥 Form Registrasi Pasien / Rekam Medis Baru
             </div>
 
             @if(session('success'))
@@ -158,7 +158,7 @@ textarea.form-control {
 
                 <div class="row">
                     <div class="form-group">
-                        <label class="form-label">No Rekam Medis</label>
+                        <label class="form-label">No Rekam Medis (Otomatis & Paten)</label>
                         <input type="text" name="no_rm" class="form-control" value="{{ $nextRm }}" readonly required>
                     </div>
 
@@ -187,7 +187,7 @@ textarea.form-control {
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">No. Telepon</label>
+                        <label class="form-label">No. Telepon (Opsional)</label>
                         <input type="text" name="no_telepon" class="form-control" placeholder="Contoh: 08123456789">
                     </div>
 
@@ -197,7 +197,7 @@ textarea.form-control {
                     </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Simpan Data</button>
+                <button type="submit" class="btn-submit">Simpan Data Pendaftaran</button>
             </form>
         </div>
     </div>

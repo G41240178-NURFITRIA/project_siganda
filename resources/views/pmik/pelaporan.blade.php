@@ -1,4 +1,3 @@
-*resources/views/pmik/pelaporan.blade.php*
 <x-app-layout>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
@@ -86,16 +85,14 @@ body { background:#EEF2F7; }
                     <div class="report-title">
                         <span style="color: #10B981;">🤍</span> 10 Besar Morbiditas
                     </div>
-                    <a href="{{ route('pmik.pelaporan.morbiditas') }}" class="report-link">Lihat Detail &rarr;</a>
                 </div>
                 <div class="report-number">{{ $morbiditasBulanan }}</div>
-                <div class="report-label">Kasus Bulan Ini</div>
-                <div class="report-trend {{ $trendMorbiditas < 0 ? 'down' : '' }}">
-                    {{ $trendMorbiditasText }}
+                <div class="report-label">Total Kasus Bulan Ini</div>
+                <div style="margin-top: 18px;">
+                    <a href="{{ route('pmik.pelaporan.morbiditas') }}" class="btn-lihat-detail" style="background: linear-gradient(135deg, #10B981, #059669); box-shadow: 0 2px 8px rgba(16,185,129,0.3);">
+                        Lihat Detail &rarr;
+                    </a>
                 </div>
-                <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
-                    <polyline fill="none" stroke="#34D399" stroke-width="2" points="0,25 20,15 40,25 60,5 80,15 100,2"/>
-                </svg>
             </div>
 
             {{-- Mortalitas Bulanan --}}
@@ -104,16 +101,14 @@ body { background:#EEF2F7; }
                     <div class="report-title">
                         <span style="color: #EF4444;">💀</span> 10 Besar Mortalitas
                     </div>
-                    <a href="{{ route('pmik.pelaporan.mortalitas') }}" class="report-link">Lihat Detail &rarr;</a>
                 </div>
                 <div class="report-number">{{ $mortalitasBulanan }}</div>
                 <div class="report-label">Data Kematian Bulan Ini</div>
-                <div class="report-trend {{ $trendKematian < 0 ? 'down' : '' }}">
-                    {{ $trendKematianText }}
+                <div style="margin-top: 18px;">
+                    <a href="{{ route('pmik.pelaporan.mortalitas') }}" class="btn-lihat-detail" style="background: linear-gradient(135deg, #EF4444, #DC2626); box-shadow: 0 2px 8px rgba(239,68,68,0.3);">
+                        Lihat Detail &rarr;
+                    </a>
                 </div>
-                <svg class="mini-chart" viewBox="0 0 100 40" preserveAspectRatio="none">
-                    <polyline fill="none" stroke="#F87171" stroke-width="2" points="0,35 20,25 40,30 60,15 80,5 100,0"/>
-                </svg>
             </div>
 
         </div>
