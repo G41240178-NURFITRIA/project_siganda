@@ -80,7 +80,7 @@ tr:hover td { background-color: #f8fafc; }
                             @if($t->status_observasi !== 'selesai')
                                 <form action="{{ route('triage.selesai', $t->id) }}" method="POST" style="margin:0; display:flex; justify-content:center;">
                                     @csrf
-                                    <select name="tindak_lanjut" required style="min-width: 160px; width:100%; max-width:180px; padding: 10px 12px; border:1px solid #cbd5e1; border-radius:10px; font-size:13px; color:#0f172a; background: rgba(255,255,255,0.88); box-shadow: inset 0 1px 2px rgba(15,23,42,0.08);">
+                                    <select name="tindak_lanjut" required class= "tindak_lanjut_select">
                                         <option value="">Pilih tindak lanjut</option>
                                         <option value="Pulang">🏠 Pulang</option>
                                         <option value="Rawat Inap">🏥 Rawat Inap</option>
@@ -98,7 +98,7 @@ tr:hover td { background-color: #f8fafc; }
                             @endif
                         </td>
                         <td style="text-align:center;">
-                            <a href="{{ route('triage.cetak', $t->id) }}" target="_blank" style="text-decoration:none; background:#3b82f6; color:white; padding:7px 12px; border-radius:8px; font-size:12px; font-weight:700;">👁️ Detail</a>
+                            <a href="{{ route('triage.cetak', $t->id) }}" target="_blank" class="detail_btn">👁️ Detail</a>
                         </td>
                     </tr>
                     @empty
