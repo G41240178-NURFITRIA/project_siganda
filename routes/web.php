@@ -54,15 +54,26 @@ Route::middleware([
         if ($user->isPmik()) {
             $rekamMedis = \App\Models\RekamMedis::latest()->take(5)->get();
             $totalRm = \App\Models\RekamMedis::count();
-            $rmMenunggu = \App\Models\RekamMedis::where('status_validasi', 'menunggu')->count();
-            $rmValid = \App\Models\RekamMedis::where('status_validasi', 'valid')->count();
-            $rmDitolak = \App\Models\RekamMedis::where('status_validasi', 'ditolak')->count();
+            $totalPasienHariIni = \App\Models\RekamMedis::whereDate('created_at', today())->count();
             $pasienDirawat = \App\Models\Triage::where('tindak_lanjut', 'Rawat Inap')->count();
             $tlPulang = \App\Models\Triage::where('tindak_lanjut', 'Pulang')->count();
             $tlRawatInap = \App\Models\Triage::where('tindak_lanjut', 'Rawat Inap')->count();
             $tlRujuk = \App\Models\Triage::where('tindak_lanjut', 'Rujuk')->count();
             $tlMeninggal = \App\Models\Triage::where('tindak_lanjut', 'Meninggal')->count();
-            return view('pmik.dashboard', compact('rekamMedis', 'totalRm', 'rmMenunggu', 'rmValid', 'rmDitolak', 'pasienDirawat', 'tlPulang', 'tlRawatInap', 'tlRujuk', 'tlMeninggal'));
+
+            $pendaftaran7Hari = collect();
+            for ($i = 6; $i >= 0; $i--) {
+                $tanggal = now()->subDays($i)->toDateString();
+                $jumlah = \App\Models\RekamMedis::whereDate('created_at', $tanggal)->count();
+                $pendaftaran7Hari->push((object) [
+                    'label' => \Carbon\Carbon::parse($tanggal)->translatedFormat('d M'),
+                    'count' => $jumlah,
+                ]);
+            }
+            $counts = $pendaftaran7Hari->pluck('count')->toArray();
+            $maxPendaftaran = !empty($counts) ? max($counts) : 1;
+
+            return view('pmik.dashboard', compact('rekamMedis', 'totalRm', 'totalPasienHariIni', 'pasienDirawat', 'tlPulang', 'tlRawatInap', 'tlRujuk', 'tlMeninggal', 'pendaftaran7Hari', 'maxPendaftaran'));
         }
         if ($user->isDokter()) {
             $rekamMedis = \App\Models\RekamMedis::latest()->take(5)->get();
@@ -77,10 +88,7 @@ Route::middleware([
                 'laki' => \App\Models\Triage::whereDate('created_at', today())->where('jenis_kelamin', 'L')->count(),
                 'perempuan' => \App\Models\Triage::whereDate('created_at', today())->where('jenis_kelamin', 'P')->count(),
             ];
-            $tindakanTotal = \App\Models\RekamMedis::whereDate('created_at', today())->whereNotNull('tindakan_dokter')->count();
-            $diagnosaTotal = \App\Models\RekamMedis::whereDate('created_at', today())->whereNotNull('diagnosa_dokter')->count();
-
-            return view('dokter.dashboard', compact('rekamMedis', 'triages', 'selesaiHariIni', 'stats', 'tindakanTotal', 'diagnosaTotal'));
+            return view('dokter.dashboard', compact('rekamMedis', 'triages', 'selesaiHariIni', 'stats'));
         }
         if ($user->isPerawat()) {
             $triages = \App\Models\Triage::latest()->take(5)->get();
@@ -183,9 +191,7 @@ Route::middleware([
         ->middleware('role:pmik,dokter,admin')
         ->names('rekam.medis');
 
-    Route::patch('/rekam-medis/{id}/validasi', [App\Http\Controllers\RekamMedisController::class, 'validasi'])
-        ->middleware('role:pmik,admin')
-        ->name('rekam.medis.validasi');
+
 
     Route::get('/pmik/pelaporan', function () {
         // Sensus Bulanan (Semua Pasien)
@@ -200,16 +206,9 @@ Route::middleware([
         $trendSensus = $sensusBulanLalu > 0 ? round((($sensusBulanan - $sensusBulanLalu) / $sensusBulanLalu) * 100) : ($sensusBulanan > 0 ? 100 : 0);
         $trendSensusText = $trendSensus >= 0 ? '▲ ' . $trendSensus . '% naik' : '▼ ' . abs($trendSensus) . '% turun';
 
-        // Morbiditas Bulanan (Yang ada diagnosa)
-        $morbiditasBulanan = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
-            ->whereYear('created_at', date('Y'))
-            ->whereNotNull('diagnosa_dokter')
-            ->count();
-
-        $morbiditasBulanLalu = \App\Models\RekamMedis::whereMonth('created_at', today()->subMonth()->format('m'))
-            ->whereYear('created_at', today()->subMonth()->format('Y'))
-            ->whereNotNull('diagnosa_dokter')
-            ->count();
+        // Morbiditas Bulanan
+        $morbiditasBulanan = 0;
+        $morbiditasBulanLalu = 0;
             
         $trendMorbiditas = $morbiditasBulanLalu > 0 ? round((($morbiditasBulanan - $morbiditasBulanLalu) / $morbiditasBulanLalu) * 100) : ($morbiditasBulanan > 0 ? 100 : 0);
         $trendMorbiditasText = $trendMorbiditas >= 0 ? '▲ ' . $trendMorbiditas . '% naik' : '▼ ' . abs($trendMorbiditas) . '% turun';
@@ -275,7 +274,9 @@ Route::middleware([
 
     // Arsip Morbiditas Bulanan
     Route::get('/pmik/pelaporan/morbiditas', function () {
+        // Ambil bulan-bulan yang punya data diagnosa dokter
         $allData = \App\Models\RekamMedis::whereNotNull('diagnosa_dokter')
+            ->where('diagnosa_dokter', '!=', '')
             ->selectRaw('YEAR(created_at) as tahun, MONTH(created_at) as bulan, COUNT(*) as total')
             ->groupBy('tahun', 'bulan')
             ->orderByDesc('tahun')
@@ -294,7 +295,7 @@ Route::middleware([
         return view('pmik.pelaporan_morbiditas', compact('arsip'));
     })->middleware('role:pmik')->name('pmik.pelaporan.morbiditas');
 
-    // Detail Morbiditas per Bulan
+    // Detail Morbiditas per Bulan — Top 10 diagnosa terbanyak
     Route::get('/pmik/pelaporan/morbiditas/detail', function (Illuminate\Http\Request $request) {
         $month = $request->query('month', date('m'));
         $year = $request->query('year', date('Y'));
@@ -302,10 +303,11 @@ Route::middleware([
         $data = \App\Models\RekamMedis::whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
             ->whereNotNull('diagnosa_dokter')
-            ->select('diagnosa_dokter', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->where('diagnosa_dokter', '!=', '')
+            ->selectRaw('diagnosa_dokter, COUNT(*) as total')
             ->groupBy('diagnosa_dokter')
             ->orderByDesc('total')
-            ->take(10)
+            ->limit(10)
             ->get();
 
         $bulanNama = \Carbon\Carbon::create()->month((int)$month)->translatedFormat('F');

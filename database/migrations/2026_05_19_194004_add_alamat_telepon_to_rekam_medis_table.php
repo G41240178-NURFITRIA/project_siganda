@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('rekam_medis', function (Blueprint $table) {
-            $table->string('nik', 16)->nullable()->after('no_rm');
+            $table->text('alamat')->nullable()->after('jenis kelamin');
+            $table->string('no_telepon', 12)->nullable()->after('alamat');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('rekam_medis', function (Blueprint $table) {
-            $table->dropColumn('nik');
+            $table->dropColumn(['alamat', 'no_telepon']);
         });
     }
 };

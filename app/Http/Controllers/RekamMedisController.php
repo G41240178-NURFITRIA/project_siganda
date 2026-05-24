@@ -26,12 +26,12 @@ class RekamMedisController extends Controller
     {
         $request->validate([
             'no_rm' => 'required|unique:rekam_medis',
-            'nik' => 'required|string|size:16',
-            'nama_pasien' => 'required',
+            'nik' => 'required|digits:16',
+            'nama_pasien' => 'required|regex:/^[A-Za-zÀ-ÿ\s\-\']+$/u|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
-            'alamat' => 'nullable',
-            'no_telepon' => 'nullable|string|max:20',
+            'alamat' => 'nullable|max:255|regex:/^[0-9A-Za-zÀ-ÿ\s,\.\-\/\#]+$/u',
+            'no_telepon' => 'nullable|digits_between:10,12',
         ]);
 
         RekamMedis::create($request->all());
@@ -45,8 +45,8 @@ class RekamMedisController extends Controller
         
         $request->validate([
             'no_rm' => 'required|unique:rekam_medis,no_rm,' . $rm->id,
-            'nik' => 'required|string|size:16',
-            'nama_pasien' => 'required',
+            'nik' => 'required|digits:16',
+            'nama_pasien' => 'required|regex:/^[A-Za-zÀ-ÿ\s\-\']+$/u|max:100',
             'tanggal_lahir' => 'required|date',
             'jenis_kelamin' => 'required|in:L,P',
             'alamat' => 'nullable',

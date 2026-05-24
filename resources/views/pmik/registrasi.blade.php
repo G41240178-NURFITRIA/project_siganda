@@ -164,12 +164,12 @@ textarea.form-control {
 
                     <div class="form-group">
                         <label class="form-label">Nomor Induk Kependudukan (NIK)</label>
-                        <input type="text" name="nik" class="form-control" placeholder="Masukkan 16 digit NIK" required maxlength="16">
+                         <input type="text" name="nik" class="form-control" placeholder="Masukkan 16 digit NIK" required maxlength="16" inputmode="numeric" pattern="\d{16}" title="NIK harus terdiri dari 16 digit angka">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Nama Lengkap Pasien</label>
-                        <input type="text" name="nama_pasien" class="form-control" placeholder="Masukkan nama pasien" required>
+                        <input type="text" name="nama_pasien" class="form-control" placeholder="Masukkan nama pasien" required maxlength="100" title="Nama hanya boleh berisi huruf, spasi, dan tanda hubung">
                     </div>
 
                     <div class="form-group">
@@ -188,12 +188,12 @@ textarea.form-control {
 
                     <div class="form-group">
                         <label class="form-label">No. Telepon (Opsional)</label>
-                        <input type="text" name="no_telepon" class="form-control" placeholder="Contoh: 08123456789">
+                        <input type="text" name="no_telepon" class="form-control" placeholder="Contoh: 08123456789" inputmode="numeric" maxlength="12" pattern="\d{10,12}" title="Nomor telepon harus terdiri dari 10 sampai 12 digit angka">
                     </div>
 
                     <div class="form-group" style="grid-column: span 2;">
                         <label class="form-label">Alamat Lengkap</label>
-                        <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap pasien..." style="min-height: 40px;"></textarea>
+                        <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap pasien..." maxlength="255" style="min-height: 40px;"></textarea>
                     </div>
                 </div>
 
