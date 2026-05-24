@@ -206,9 +206,18 @@ Route::middleware([
         $trendSensus = $sensusBulanLalu > 0 ? round((($sensusBulanan - $sensusBulanLalu) / $sensusBulanLalu) * 100) : ($sensusBulanan > 0 ? 100 : 0);
         $trendSensusText = $trendSensus >= 0 ? '▲ ' . $trendSensus . '% naik' : '▼ ' . abs($trendSensus) . '% turun';
 
-        // Morbiditas Bulanan
-        $morbiditasBulanan = 0;
-        $morbiditasBulanLalu = 0;
+        // Morbiditas Bulanan (jumlah diagnosa unik bulan ini)
+        $morbiditasBulanan = \App\Models\RekamMedis::whereMonth('created_at', date('m'))
+            ->whereYear('created_at', date('Y'))
+            ->whereNotNull('diagnosa_dokter')
+            ->where('diagnosa_dokter', '!=', '')
+            ->count();
+
+        $morbiditasBulanLalu = \App\Models\RekamMedis::whereMonth('created_at', today()->subMonth()->format('m'))
+            ->whereYear('created_at', today()->subMonth()->format('Y'))
+            ->whereNotNull('diagnosa_dokter')
+            ->where('diagnosa_dokter', '!=', '')
+            ->count();
             
         $trendMorbiditas = $morbiditasBulanLalu > 0 ? round((($morbiditasBulanan - $morbiditasBulanLalu) / $morbiditasBulanLalu) * 100) : ($morbiditasBulanan > 0 ? 100 : 0);
         $trendMorbiditasText = $trendMorbiditas >= 0 ? '▲ ' . $trendMorbiditas . '% naik' : '▼ ' . abs($trendMorbiditas) . '% turun';
