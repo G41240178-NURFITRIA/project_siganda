@@ -50,6 +50,16 @@ textarea.form-control { resize: vertical; min-height: 80px; }
         </div>
         @endif
 
+        @if($errors->any())
+        <div style="background: #FEE2E2; color: #DC2626; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         {{-- TABLE VIEW --}}
         <div class="card" x-show="!showForm && !showDetail">
             <div class="card-header">
@@ -79,8 +89,15 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                             <td>{{ $rm->nama_pasien }}</td>
                             <td>{{ Str::limit($rm->keluhan_utama, 30) }}</td>
                             <td>
-                                <button @click="editData = {{ json_encode($rm) }}; showForm = true" style="background:#EEF2FF; color:#4F46E5; border:1px solid #4F46E5; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; margin-bottom: 5px; display: block; width: 100%;">✏️ Edit</button>
-                                <button @click="detailData = {{ json_encode($rm) }}; showDetail = true" style="background:#E0E7FF; color:#4F46E5; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; display: block; width: 100%;">👁️ Lihat</button>
+                                @php
+                                    $triage = \App\Models\Triage::where('nama_pasien', $rm->nama_pasien)
+                                                ->whereDate('created_at', $rm->created_at->format('Y-m-d'))
+                                                ->first();
+                                    $rmData = $rm->toArray();
+                                    $rmData['triage'] = $triage ? $triage->toArray() : null;
+                                @endphp
+                                <button @click="editData = {{ json_encode($rmData) }}; showForm = true" style="background:#EEF2FF; color:#4F46E5; border:1px solid #4F46E5; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; margin-bottom: 5px; display: block; width: 100%;">✏️ Edit</button>
+                                <button @click="detailData = {{ json_encode($rmData) }}; showDetail = true" style="background:#E0E7FF; color:#4F46E5; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-weight:600; font-size:12px; display: block; width: 100%;">👁️ Lihat</button>
                             </td>
                         </tr>
                         @endforeach
@@ -135,6 +152,18 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         </div>
                     </div>
 
+                    {{-- Data Triage (Tanda Vital) --}}
+                    <div x-show="editData.triage" style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                        <h4 style="color: #4B5563; font-size: 14px; margin-bottom: 10px; font-weight: 700;">🩺 Tanda Vital (Hasil Triage Perawat)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; font-size: 13px;">
+                            <div><span style="color:#6B7280; display:block;">Tekanan Darah</span><strong x-text="editData.triage?.td" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Suhu</span><strong x-text="editData.triage?.suhu + ' °C'" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Nadi</span><strong x-text="editData.triage?.nadi + ' x/mnt'" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Respirasi</span><strong x-text="editData.triage?.respirasi + ' x/mnt'" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Saturasi</span><strong x-text="editData.triage?.saturasi + ' %'" style="color:#111827;"></strong></div>
+                        </div>
+                    </div>
+
                     <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg> Anamnesa</h3>
                     <div class="form-group" style="margin-bottom: 15px;">
                         <label>Keluhan Utama</label>
@@ -146,6 +175,75 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                     </div>
 
 
+                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Diagnosa & Tindakan Dokter</h3>
+                    <div class="form-group" style="margin-bottom: 15px; position: relative;" x-data="diagnosaSuggest()" x-init="initDiagnosa()">
+                        <label>Diagnosa Dokter <span style="color: #EF4444;">*</span></label>
+                        
+                        <textarea 
+                            name="diagnosa_dokter"
+                            class="form-control" 
+                            x-model="finalValue" 
+                            x-ref="textarea"
+                            @input.debounce.300ms="handleInput()"
+                            @focus="showDropdown = suggestions.length > 0"
+                            @click.away="showDropdown = false"
+                            style="min-height:80px;" 
+                            placeholder="Ketik diagnosa penyakit... (tekan Enter untuk baris baru)"></textarea>
+
+                        {{-- Dropdown Autocomplete --}}
+                        <div x-show="showDropdown && suggestions.length > 0" 
+                             x-cloak
+                             style="position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #D1D5DB; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); max-height: 250px; overflow-y: auto; z-index: 999; margin-top: 4px;">
+                            <template x-for="(item, index) in suggestions" :key="index">
+                                <div @click="selectSuggestion(item)" 
+                                     style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #F3F4F6; display: flex; align-items: center; gap: 10px; transition: background 0.15s;"
+                                     onmouseover="this.style.background='#EEF2FF'" 
+                                     onmouseout="this.style.background='#fff'">
+                                    <span style="background: #DBEAFE; color: #1D4ED8; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap;" x-text="item.code"></span>
+                                    <span style="font-size: 14px; color: #374151;" x-text="item.name"></span>
+                                </div>
+                            </template>
+                        </div>
+
+                        {{-- Loading indicator --}}
+                        <div x-show="isLoading" style="position: absolute; right: 12px; top: 12px;">
+                            <svg style="animation: spin 1s linear infinite; width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M7.76 7.76L4.93 4.93"/></svg>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px; position: relative;" x-data="tindakanSuggest()" x-init="initTindakan()">
+                        <label>Tindakan Dokter</label>
+                        
+                        <textarea 
+                            name="tindakan_dokter"
+                            class="form-control" 
+                            x-model="finalValue" 
+                            x-ref="textarea"
+                            @input.debounce.300ms="handleInput()"
+                            @focus="showDropdown = suggestions.length > 0"
+                            @click.away="showDropdown = false"
+                            style="min-height:80px;" 
+                            placeholder="Ketik tindakan medis... (tekan Enter untuk baris baru)"></textarea>
+
+                        {{-- Dropdown Autocomplete Tindakan --}}
+                        <div x-show="showDropdown && suggestions.length > 0" 
+                             x-cloak
+                             style="position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #D1D5DB; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); max-height: 250px; overflow-y: auto; z-index: 998; margin-top: 4px;">
+                            <template x-for="(item, index) in suggestions" :key="index">
+                                <div @click="selectSuggestion(item)" 
+                                     style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #F3F4F6; display: flex; align-items: center; gap: 10px; transition: background 0.15s;"
+                                     onmouseover="this.style.background='#EEF2FF'" 
+                                     onmouseout="this.style.background='#fff'">
+                                    <span style="background: #E0E7FF; color: #4338CA; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap;" x-text="item.code"></span>
+                                    <span style="font-size: 14px; color: #374151;" x-text="item.name"></span>
+                                </div>
+                            </template>
+                        </div>
+
+                        {{-- Loading indicator --}}
+                        <div x-show="isLoading" style="position: absolute; right: 12px; top: 12px;">
+                            <svg style="animation: spin 1s linear infinite; width: 18px; height: 18px;" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="2"><path d="M12 2v4m0 12v4m-7.07-3.93l2.83-2.83m8.48-8.48l2.83-2.83M2 12h4m12 0h4m-3.93 7.07l-2.83-2.83M7.76 7.76L4.93 4.93"/></svg>
+                        </div>
+                    </div>
 
                     <div class="action-buttons">
                         <button type="button" @click="showForm = false" class="btn-secondary">Batal</button>
@@ -188,6 +286,18 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         </div>
                     </div>
 
+                    {{-- Data Triage (Tanda Vital) di Detail --}}
+                    <div x-show="detailData.triage" style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                        <h4 style="color: #4B5563; font-size: 14px; margin-bottom: 10px; font-weight: 700;">🩺 Tanda Vital (Hasil Triage Perawat)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; font-size: 13px;">
+                            <div><span style="color:#6B7280; display:block;">Tekanan Darah</span><strong x-text="detailData.triage?.td" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Suhu</span><strong x-text="detailData.triage?.suhu + ' °C'" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Nadi</span><strong x-text="detailData.triage?.nadi + ' x/mnt'" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Respirasi</span><strong x-text="detailData.triage?.respirasi + ' x/mnt'" style="color:#111827;"></strong></div>
+                            <div><span style="color:#6B7280; display:block;">Saturasi</span><strong x-text="detailData.triage?.saturasi + ' %'" style="color:#111827;"></strong></div>
+                        </div>
+                    </div>
+
                     <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg> Anamnesa</h3>
                     <div class="form-group" style="margin-bottom: 15px;">
                         <label>Keluhan Utama</label>
@@ -198,8 +308,155 @@ textarea.form-control { resize: vertical; min-height: 80px; }
                         <textarea class="form-control" readonly x-text="detailData.riwayat_penyakit" style="min-height:60px;"></textarea>
                     </div>
 
+                    <h3 style="margin-top: 20px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg> Diagnosa & Tindakan Dokter</h3>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Diagnosa Dokter</label>
+                        <textarea class="form-control" readonly x-text="detailData.diagnosa_dokter" style="min-height:60px;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Tindakan Dokter</label>
+                        <textarea class="form-control" readonly x-text="detailData.tindakan_dokter" style="min-height:60px;"></textarea>
+                    </div>
+
 
                 </div>
             </div>
         </div>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('diagnosaSuggest', () => ({
+                searchQuery: '',
+                finalValue: '',
+                suggestions: [],
+                isLoading: false,
+                showDropdown: false,
+
+                initDiagnosa() {
+                    this.$watch('editData', (value) => {
+                        if (value && value.diagnosa_dokter) {
+                            this.finalValue = value.diagnosa_dokter;
+                        } else {
+                            this.finalValue = '';
+                        }
+                        this.searchQuery = '';
+                    });
+                },
+
+                handleInput() {
+                    const lines = this.finalValue.split('\n');
+                    this.searchQuery = lines[lines.length - 1].trim();
+                    this.fetchSuggestions();
+                },
+
+                async fetchSuggestions() {
+                    if (this.searchQuery.length < 3) {
+                        this.suggestions = [];
+                        this.showDropdown = false;
+                        return;
+                    }
+                    
+                    this.isLoading = true;
+                    try {
+                        const response = await fetch(`https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=${encodeURIComponent(this.searchQuery)}&sf=code,name&df=code,name&maxList=10`);
+                        const data = await response.json();
+                        
+                        if (data && data[3]) {
+                            this.suggestions = data[3].map(item => ({
+                                code: item[0],
+                                name: item[1]
+                            }));
+                            this.showDropdown = this.suggestions.length > 0;
+                        } else {
+                            this.suggestions = [];
+                            this.showDropdown = false;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching ICD-10 data:', error);
+                        this.suggestions = [];
+                        this.showDropdown = false;
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                selectSuggestion(item) {
+                    const lines = this.finalValue.split('\n');
+                    lines[lines.length - 1] = `[${item.code}] ${item.name}`;
+                    this.finalValue = lines.join('\n');
+                    
+                    this.searchQuery = '';
+                    this.showDropdown = false;
+                    this.$refs.textarea.focus();
+                }
+            }));
+
+            Alpine.data('tindakanSuggest', () => ({
+                searchQuery: '',
+                finalValue: '',
+                suggestions: [],
+                isLoading: false,
+                showDropdown: false,
+
+                initTindakan() {
+                    this.$watch('editData', (value) => {
+                        if (value && value.tindakan_dokter) {
+                            this.finalValue = value.tindakan_dokter;
+                        } else {
+                            this.finalValue = '';
+                        }
+                        this.searchQuery = '';
+                    });
+                },
+
+                handleInput() {
+                    const lines = this.finalValue.split('\n');
+                    this.searchQuery = lines[lines.length - 1].trim();
+                    this.fetchSuggestions();
+                },
+
+                async fetchSuggestions() {
+                    if (this.searchQuery.length < 3) {
+                        this.suggestions = [];
+                        this.showDropdown = false;
+                        return;
+                    }
+                    
+                    this.isLoading = true;
+                    try {
+                        const response = await fetch(`https://clinicaltables.nlm.nih.gov/api/icd10pcs/v3/search?terms=${encodeURIComponent(this.searchQuery)}&sf=code,name&df=code,name&maxList=10`);
+                        const data = await response.json();
+                        
+                        if (data && data[3]) {
+                            this.suggestions = data[3].map(item => ({
+                                code: item[0],
+                                name: item[1]
+                            }));
+                            this.showDropdown = this.suggestions.length > 0;
+                        } else {
+                            this.suggestions = [];
+                            this.showDropdown = false;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching ICD-10-PCS data:', error);
+                        this.suggestions = [];
+                        this.showDropdown = false;
+                    } finally {
+                        this.isLoading = false;
+                    }
+                },
+
+                selectSuggestion(item) {
+                    const lines = this.finalValue.split('\n');
+                    lines[lines.length - 1] = `[${item.code}] ${item.name}`;
+                    this.finalValue = lines.join('\n');
+                    
+                    this.searchQuery = '';
+                    this.showDropdown = false;
+                    this.$refs.textarea.focus();
+                }
+            }));
+        });
+    </script>
 </x-app-layout>

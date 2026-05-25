@@ -134,13 +134,35 @@ Route::middleware([
         $triages = \App\Models\Triage::latest()->get();
         if ($user->isAdmin()) return view('admin.triage', compact('triages'));
         if ($user->isDokter()) return view('dokter.triage', compact('triages'));
-        if ($user->isPerawat()) return view('perawat.triage', compact('triages'));
+        if ($user->isPerawat()) {
+            // Ambil daftar pasien yang sudah ditriage hari ini
+            $triagedNames = \App\Models\Triage::whereDate('created_at', today())->pluck('nama_pasien')->toArray();
+            
+            // Ambil daftar rekam medis (pendaftaran) hari ini yang BELUM ditriage
+            $rekamMedisHariIni = \App\Models\RekamMedis::whereDate('created_at', today())
+                                    ->whereNotIn('nama_pasien', $triagedNames)
+                                    ->latest()
+                                    ->get();
+            return view('perawat.triage', compact('triages', 'rekamMedisHariIni'));
+        }
         abort(403);
     })->middleware('role:dokter,perawat,admin')
       ->name('triage');
 
     Route::post('/triage/store', function (Illuminate\Http\Request $request) {
         $triage = \App\Models\Triage::create($request->all());
+        
+        // Integrasi: Cari rekam medis hari ini dengan nama yang sama, lalu update keluhan_utama
+        $rm = \App\Models\RekamMedis::where('nama_pasien', $triage->nama_pasien)
+                ->whereDate('created_at', today())
+                ->first();
+                
+        if ($rm) {
+            // Kita bisa sinkronkan alergi ke riwayat penyakit jika mau, tapi yang utama adalah keluhan
+            $rm->keluhan_utama = $triage->keluhan_utama;
+            $rm->save();
+        }
+
         return redirect()->route('triage')->with('success', 'Triage berhasil disimpan.');
     })->middleware('role:perawat,admin,dokter')->name('triage.store');
 

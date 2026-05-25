@@ -24,6 +24,7 @@ class RekamMedisController extends Controller
 
     public function store(Request $request)
     {
+        \Illuminate\Support\Facades\Log::info('Store method hit!');
         $request->validate([
             'no_rm' => 'required|unique:rekam_medis',
             'nik' => 'required|digits:16',
@@ -41,19 +42,37 @@ class RekamMedisController extends Controller
 
     public function update(Request $request, $id)
     {
+        \Illuminate\Support\Facades\Log::info('Form submitted! Diagnosa: ' . $request->diagnosa_dokter);
         $rm = RekamMedis::findOrFail($id);
-        
-        $request->validate([
-            'no_rm' => 'required|unique:rekam_medis,no_rm,' . $rm->id,
-            'nik' => 'required|digits:16',
-            'nama_pasien' => 'required|regex:/^[A-Za-zÀ-ÿ\s\-\']+$/u|max:100',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:L,P',
-            'alamat' => 'nullable',
-            'no_telepon' => 'nullable|string|max:20',
-        ]);
+        $user = auth()->user();
 
-        $rm->update($request->all());
+        // Dokter hanya update field medis (diagnosa & tindakan)
+        \Illuminate\Support\Facades\Log::info('User Role Update: ' . $user->role);
+        if ($user->role === 'dokter') {
+            $request->validate([
+                'diagnosa_dokter' => 'nullable|string',
+                'tindakan_dokter' => 'nullable|string',
+                'keluhan_utama' => 'nullable|string',
+            ]);
+
+            $rm->update($request->only([
+                'keluhan_utama', 'riwayat_penyakit',
+                'diagnosa_dokter', 'tindakan_dokter'
+            ]));
+        } else {
+            // PMIK / Admin update data identitas pasien
+            $request->validate([
+                'no_rm' => 'required|unique:rekam_medis,no_rm,' . $rm->id,
+                'nik' => 'required|digits:16',
+                'nama_pasien' => 'required|regex:/^[A-Za-zÀ-ÿ\s\-\']+$/u|max:100',
+                'tanggal_lahir' => 'required|date',
+                'jenis_kelamin' => 'required|in:L,P',
+                'alamat' => 'nullable',
+                'no_telepon' => 'nullable|string|max:20',
+            ]);
+
+            $rm->update($request->all());
+        }
 
         return back()->with('success', 'Data rekam medis berhasil diperbarui!');
     }
